@@ -1332,11 +1332,631 @@ Para ejecutar el proyecto correctamente, necesitamos un entorno compatible y una
 
 <!-- _class: lead -->
 
-# Fin
+# Ficheros
 
-## PrimeraAppReconocimientoVoz
+# com.example.reconocimientovoz
 
-**Próximo paso:** configurar Gradle, sincronizar el proyecto y ejecutar la aplicación en un dispositivo Android.
+## MainActivity.kt
+
+```kotlin
+package com.example.reconocimientovoz
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.reconocimientovoz.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var speechManager: SpeechRecognitionManager
+    private val commandProcessor = VoiceCommandProcessor()
+    private var listeningAnimator: ObjectAnimator? = null
+    private var helpDialog: AlertDialog? = null
+    private var isListening = false
+
+    private val requestAudioPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) startListening()
+            else showAction("Permiso de micrófono denegado")
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        speechManager = SpeechRecognitionManager(this)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainer.id, HomeFragment())
+                .commit()
+        }
+
+        binding.btnTheme.setOnClickListener { toggleTheme() }
+        binding.fabMicrofono.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    checkPermissionAndStart()
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    stopListening()
+                    true
+                }
+                else -> true
+            }
+        }
+
+        lifecycleScope.launch {
+            speechManager.state.collect { state ->
+                when (state) {
+                    is VoiceState.Idle -> setListeningUi(false, "Micrófono inactivo")
+                    is VoiceState.Listening -> setListeningUi(true, "Escuchando…")
+                    is VoiceState.Partial -> {
+                        setListeningUi(true, "Escuchando…")
+                        binding.txtRecognized.text = "Parcial: ${state.text}"
+                    }
+                    is VoiceState.Result -> {
+                        setListeningUi(false, "Reconocimiento completado")
+                        binding.txtRecognized.text = "Resultado final: ${state.text}"
+                        handleCommand(state.text)
+                    }
+                    is VoiceState.Error -> {
+                        setListeningUi(false, state.message)
+                        binding.txtRecognized.text = state.message
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkPermissionAndStart() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED) {
+            startListening()
+        } else {
+            requestAudioPermission.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
+
+    private fun startListening() {
+        isListening = true
+        speechManager.startListening()
+    }
+
+    private fun stopListening() {
+        if (isListening) {
+            isListening = false
+            speechManager.stopListening()
+        }
+    }
+
+    private fun setListeningUi(listening: Boolean, status: String) {
+        binding.txtListeningStatus.text = status
+        if (listening) {
+            binding.listeningCircle.setBackgroundResource(R.drawable.circle_listening)
+            if (listeningAnimator == null) {
+                val sx = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.45f, 1f)
+                val sy = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.45f, 1f)
+                listeningAnimator = ObjectAnimator.ofPropertyValuesHolder(binding.listeningCircle, sx, sy).apply {
+                    duration = 850
+                    repeatCount = ObjectAnimator.INFINITE
+                    interpolator = AccelerateDecelerateInterpolator()
+                }
+            }
+            if (listeningAnimator?.isStarted != true) listeningAnimator?.start()
+        } else {
+            listeningAnimator?.cancel()
+            binding.listeningCircle.scaleX = 1f
+            binding.listeningCircle.scaleY = 1f
+            binding.listeningCircle.setBackgroundResource(R.drawable.circle_idle)
+        }
+    }
+
+    private fun handleCommand(text: String) {
+        when (commandProcessor.process(text)) {
+            VoiceCommand.GoHome -> {
+                navigate(HomeFragment())
+                showAction("Navegación: inicio")
+            }
+            VoiceCommand.GoSettings -> {
+                navigate(SettingsFragment())
+                showAction("Navegación: ajustes")
+            }
+            VoiceCommand.DarkTheme -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                showAction("Tema oscuro activado")
+            }
+            VoiceCommand.LightTheme -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                showAction("Tema claro activado")
+            }
+            VoiceCommand.ShowMessage -> {
+                Snackbar.make(binding.root, "¡Comando de voz ejecutado correctamente!", Snackbar.LENGTH_LONG).show()
+                showAction("Se ha mostrado un mensaje")
+            }
+            VoiceCommand.OpenDialog -> {
+                showCommandDialog()
+                showAction("Diálogo abierto")
+            }
+            VoiceCommand.CloseDialog -> {
+                if (helpDialog?.isShowing == true) {
+                    helpDialog?.dismiss()
+                    showAction("Diálogo cerrado")
+                } else {
+                    showAction("No hay ningún diálogo abierto")
+                }
+            }
+            VoiceCommand.Help -> {
+                showHelpDialog()
+                showAction("Ayuda mostrada")
+            }
+            VoiceCommand.Unknown -> {
+                showAction("Comando no reconocido: \"$text\". Di «ayuda» para ver los comandos.")
+            }
+        }
+    }
+
+    private fun navigate(fragment: androidx.fragment.app.Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentContainer.id, fragment)
+            .commit()
+    }
+
+    private fun toggleTheme() {
+        val current = AppCompatDelegate.getDefaultNightMode()
+        val dark = current == AppCompatDelegate.MODE_NIGHT_YES ||
+            (current == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM &&
+                (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+                android.content.res.Configuration.UI_MODE_NIGHT_YES)
+        AppCompatDelegate.setDefaultNightMode(
+            if (dark) AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES
+        )
+    }
+
+    private fun showCommandDialog() {
+        helpDialog?.dismiss()
+        helpDialog = AlertDialog.Builder(this)
+            .setTitle("Diálogo de ejemplo")
+            .setMessage("Este diálogo se ha abierto mediante un comando de voz. Di «cerrar diálogo» para cerrarlo.")
+            .setPositiveButton("Cerrar") { dialog, _ -> dialog.dismiss() }
+            .create()
+        helpDialog?.show()
+    }
+
+    private fun showHelpDialog() {
+        helpDialog?.dismiss()
+        helpDialog = AlertDialog.Builder(this)
+            .setTitle("Comandos disponibles")
+            .setMessage(
+                "• Inicio / ir a inicio\\n" +
+                "• Ajustes / ir a ajustes\\n" +
+                "• Tema oscuro / tema claro\\n" +
+                "• Mostrar mensaje\\n" +
+                "• Abrir diálogo / cerrar diálogo\\n" +
+                "• Ayuda"
+            )
+            .setPositiveButton("Entendido", null)
+            .create()
+        helpDialog?.show()
+    }
+
+    private fun showAction(message: String) {
+        binding.txtLastAction.text = "Acción: $message"
+    }
+
+    override fun onDestroy() {
+        listeningAnimator?.cancel()
+        helpDialog?.dismiss()
+        speechManager.destroy()
+        super.onDestroy()
+    }
+}
 
 ```
 
+## HomeFragment.kt
+
+```kotlin
+package com.example.reconocimientovoz
+
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.example.reconocimientovoz.databinding.FragmentHomeBinding
+import com.google.android.material.snackbar.Snackbar
+
+class HomeFragment : Fragment(R.layout.fragment_home) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val binding = FragmentHomeBinding.bind(view)
+        binding.btnShowMessage.setOnClickListener {
+            Snackbar.make(view, "¡Hola! Este es el mensaje de ejemplo.", Snackbar.LENGTH_LONG).show()
+        }
+        binding.btnOpenDialog.setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Diálogo de ejemplo")
+                .setMessage("Este diálogo se ha abierto desde el fragmento Inicio.")
+                .setPositiveButton("Cerrar", null)
+                .show()
+        }
+    }
+}
+
+```
+
+## SettingsFragment.kt
+
+```kotlin
+package com.example.reconocimientovoz
+
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.example.reconocimientovoz.databinding.FragmentSettingsBinding
+
+class SettingsFragment : Fragment(R.layout.fragment_settings) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val binding = FragmentSettingsBinding.bind(view)
+        binding.btnBackHome.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, HomeFragment())
+                .commit()
+        }
+    }
+}
+
+```
+
+## SpeechRecognitionManager.kt
+
+```Kotlin
+package com.example.reconocimientovoz
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import java.util.Locale
+
+sealed class VoiceState {
+    data object Idle : VoiceState()
+    data object Listening : VoiceState()
+    data class Partial(val text: String) : VoiceState()
+    data class Result(val text: String) : VoiceState()
+    data class Error(val message: String) : VoiceState()
+}
+
+class SpeechRecognitionManager(context: Context) {
+    private val appContext = context.applicationContext
+    private var recognizer: SpeechRecognizer? = null
+
+    private val _state = MutableStateFlow<VoiceState>(VoiceState.Idle)
+    val state: StateFlow<VoiceState> = _state.asStateFlow()
+
+    fun isAvailable(): Boolean = SpeechRecognizer.isRecognitionAvailable(appContext)
+
+    fun startListening() {
+        if (!isAvailable()) {
+            _state.value = VoiceState.Error("No hay un servicio de reconocimiento de voz instalado.")
+            return
+        }
+
+        try {
+            if (recognizer == null) {
+                recognizer = SpeechRecognizer.createSpeechRecognizer(appContext).also { sr ->
+                    sr.setRecognitionListener(object : RecognitionListener {
+                        override fun onReadyForSpeech(params: Bundle?) {
+                            _state.value = VoiceState.Listening
+                        }
+                        override fun onBeginningOfSpeech() {
+                            _state.value = VoiceState.Listening
+                        }
+                        override fun onRmsChanged(rmsdB: Float) {}
+                        override fun onBufferReceived(buffer: ByteArray?) {}
+                        override fun onEndOfSpeech() {
+                            // Se mantiene el estado hasta recibir resultado/error.
+                        }
+                        override fun onError(error: Int) {
+                            val message = when (error) {
+                                SpeechRecognizer.ERROR_AUDIO -> "Error de audio."
+                                SpeechRecognizer.ERROR_CLIENT -> "Reconocimiento interrumpido."
+                                SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Falta permiso para usar el micrófono."
+                                SpeechRecognizer.ERROR_NETWORK -> "Error de red."
+                                SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "Tiempo de espera de red agotado."
+                                SpeechRecognizer.ERROR_NO_MATCH -> "No se ha entendido el comando. Inténtalo otra vez."
+                                SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "El reconocedor está ocupado."
+                                SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "No se ha detectado voz."
+                                else -> "Error de reconocimiento ($error)."
+                            }
+                            _state.value = VoiceState.Error(message)
+                        }
+                        override fun onResults(results: Bundle?) {
+                            val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                            val text = matches?.firstOrNull()
+                            _state.value = if (text.isNullOrBlank()) {
+                                VoiceState.Error("No se ha obtenido ningún resultado.")
+                            } else {
+                                VoiceState.Result(text)
+                            }
+                        }
+                        override fun onPartialResults(partialResults: Bundle?) {
+                            val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                            matches?.firstOrNull()?.let { _state.value = VoiceState.Partial(it) }
+                        }
+                        override fun onEvent(eventType: Int, params: Bundle?) {}
+                    })
+                }
+            }
+
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES")
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "es-ES")
+                putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+                putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+                putExtra(RecognizerIntent.EXTRA_PROMPT, "Di un comando, por ejemplo: ir a ajustes")
+            }
+            _state.value = VoiceState.Listening
+            recognizer?.startListening(intent)
+        } catch (e: SecurityException) {
+            _state.value = VoiceState.Error("No hay permiso para usar el micrófono.")
+        } catch (e: Exception) {
+            _state.value = VoiceState.Error("No se pudo iniciar el reconocimiento: ${e.localizedMessage ?: "error"}")
+        }
+    }
+
+    fun stopListening() {
+        try {
+            recognizer?.stopListening()
+        } catch (_: Exception) {
+            _state.value = VoiceState.Idle
+        }
+    }
+
+    fun destroy() {
+        recognizer?.destroy()
+        recognizer = null
+        _state.value = VoiceState.Idle
+    }
+}
+
+```
+
+## VoiceCommandProcessor.kt
+
+```kotlin
+package com.example.reconocimientovoz
+
+import java.text.Normalizer
+import java.util.Locale
+
+sealed class VoiceCommand {
+    data object GoHome : VoiceCommand()
+    data object GoSettings : VoiceCommand()
+    data object DarkTheme : VoiceCommand()
+    data object LightTheme : VoiceCommand()
+    data object ShowMessage : VoiceCommand()
+    data object OpenDialog : VoiceCommand()
+    data object CloseDialog : VoiceCommand()
+    data object Help : VoiceCommand()
+    data object Unknown : VoiceCommand()
+}
+
+class VoiceCommandProcessor {
+    fun process(text: String): VoiceCommand {
+        val normalized = Normalizer.normalize(text.lowercase(Locale("es", "ES")), Normalizer.Form.NFD)
+            .replace("\\p{Mn}+".toRegex(), "")
+            .trim()
+
+        return when {
+            normalized.contains("inicio") || normalized.contains("pantalla principal") ||
+                normalized == "home" -> VoiceCommand.GoHome
+            normalized.contains("ajustes") || normalized.contains("configuracion") ||
+                normalized.contains("configuración") -> VoiceCommand.GoSettings
+            normalized.contains("tema oscuro") || normalized.contains("modo oscuro") ||
+                normalized == "oscuro" -> VoiceCommand.DarkTheme
+            normalized.contains("tema claro") || normalized.contains("modo claro") ||
+                normalized == "claro" -> VoiceCommand.LightTheme
+            normalized.contains("mostrar mensaje") || normalized == "mensaje" ||
+                normalized.contains("ensename un mensaje") -> VoiceCommand.ShowMessage
+            normalized.contains("abrir dialogo") || normalized.contains("abre dialogo") ||
+                normalized.contains("abrir cuadro") -> VoiceCommand.OpenDialog
+            normalized.contains("cerrar dialogo") || normalized.contains("cierra dialogo") ||
+                normalized.contains("cerrar cuadro") -> VoiceCommand.CloseDialog
+            normalized.contains("ayuda") || normalized.contains("comandos") -> VoiceCommand.Help
+            else -> VoiceCommand.Unknown
+        }
+    }
+}
+
+```
+
+
+# res > layout
+
+## activity_main.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/listeningCircle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/circle_idle" />
+
+        <TextView
+            android:id="@+id/txtListeningStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:text="Micrófono inactivo"
+            android:textSize="16sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTheme"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tema" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Texto reconocido (parcial y final)"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txtRecognized"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="54dp"
+        android:layout_marginTop="6dp"
+        android:background="?attr/colorSurfaceVariant"
+        android:padding="12dp"
+        android:text="Aquí aparecerá lo que digas…"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txtLastAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Acción: ninguna"
+        android:textSize="14sp" />
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fabMicrofono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mantener para hablar"
+        android:textSize="16sp"
+        app:icon="@android:drawable/ic_btn_speak_now"
+        app:iconGravity="textStart" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="Mantén pulsado el botón mientras das el comando"
+        android:textSize="12sp" />
+</LinearLayout>
+
+```
+
+## fragment_home.xml
+
+```xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pantalla de inicio"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Prueba a decir: «ir a ajustes», «tema oscuro», «mostrar mensaje» o «abrir diálogo»."
+            android:textSize="17sp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShowMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Mostrar mensaje" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenDialog"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Abrir diálogo" />
+    </LinearLayout>
+</ScrollView>
+
+```
+
+## fragment_settings.xml
+
+```xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ajustes"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Esta es la segunda pantalla. Puedes volver diciendo «inicio»."
+        android:textSize="17sp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBackHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="Volver a inicio" />
+</LinearLayout>
+
+```

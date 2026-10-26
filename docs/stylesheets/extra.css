@@ -79,3 +79,65 @@
   --md-primary-fg-color--light: #5fbcce;
   --md-primary-fg-color--dark:  #135e6d;
 }
+
+.external-page-container {
+  width: 100%;
+  height: calc(100vh - 10rem);
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.external-page-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+/* Visor de tutoriales externos */
+.compose-visor {
+  width: 100%;
+  height: calc(100vh - 12rem);
+  min-height: 600px;
+  overflow: hidden;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+}
+
+.compose-visor iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: white;
+}
+
+/* Solo en páginas que contienen un tutorial externo */
+body:has(.pagina-tutorial-extern) .md-sidebar--secondary {
+    display: none !important;
+}
+
+/* Ampliar el contenido de esas páginas */
+body:has(.pagina-tutorial-extern) .md-content {
+    max-width: 100% !important;
+}
+
+body:has(.pagina-tutorial-extern) .md-content__inner {
+    max-width: 100% !important;
+}
+
+/* Ampliar el iframe */
+.pagina-tutorial-extern .external-page-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.pagina-tutorial-extern .external-page-frame {
+    display: block;
+    width: 100%;
+    height: 85vh;
+    border: none;
+}

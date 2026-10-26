@@ -1,9 +1,39 @@
 nav:
-    - "Bloque 1: Interfaces gráficas con editor visual": 01_interfacesGráficas
-    - "Bloque 2: Interfaces Naturales de Usuario": 02_interfacesNaturales
-    - "Bloque 3: Componentes Visuales": 
-        - "3.1: Componentes Visuales": 03_componentesVisuales
-        - "3.2: Compose Multiplatform":
-            - "3.2: Compose Multiplatform": "https://lawer.github.io/tutorials-pmdm/docs/compose-multiplatform/"
-            - "Pràctica inicial: projecte i Hola Compose" : "https://lawer.github.io/tutorials-pmdm/docs/compose-multiplatform/practica-inicial.html"
-            - "3.2.1: Crear Projecte": 03.2_jetpackcompose/3.2.1.md
+  - "Bloque 1: Interfaces gráficas con editor visual": 01_interfacesGráficas
+  - "Bloque 2: Interfaces Naturales de Usuario": 02_interfacesNaturales
+
+  - "Bloque 3: Componentes Visuales":
+      - "3.1: Componentes Visuales": 03_componentesVisuales
+
+      - "3.2: Compose Multiplatform":
+          - "03.2_jetpackcompose/2_compose-multiplatform/index.md"
+
+          - "Pràctica inicial: projecte i Hola Compose": "03.2_jetpackcompose/tutorials/practica-inicial.md"
+
+          - "3.2.1: Crear Projecte": "03.2_jetpackcompose/tutorials/6-1-projecte.md"
+
+          - "3.2.2: Hola Compose": "03.2_jetpackcompose/tutorials/6-2-hola-compose.md"
+
+          - "3.2.3: Comptador de vides":
+              - "03.2_jetpackcompose/3_comptador_vides/index.md"
+              - "3.2.3.1: Construir la pantalla": "03.2_jetpackcompose/tutorials/6-3-1-estructura.md"
+              - "3.2.3.2: Afegir estat i transferències": "03.2_jetpackcompose/tutorials/6-3-2-estat.md"
+              - "3.2.3.3: Afegir els verins": "03.2_jetpackcompose/tutorials/6-3-3-verins.md"
+
+          - "3.2.4: Filmoteca":
+              - "03.2_jetpackcompose/4_filmoteca/index.md"
+              - "3.2.4.1: De String a dades": "03.2_jetpackcompose/tutorials/6-4-1-dades-text.md"
+              - "3.2.4.2: Cartells remots amb Coil": "03.2_jetpackcompose/tutorials/6-4-2-cartells.md"
+              - "3.2.4.3: Catàlegs, detalls i preferides": "03.2_jetpackcompose/tutorials/6-4-3-cataleg-detall.md"
+              - "3.2.4.4: HTTP i JSON manual": "03.2_jetpackcompose/tutorials/6-4-4-api.md"
+              - "3.2.4.5: Preferides i catàleg offline": "03.2_jetpackcompose/tutorials/6-4-5-persistencia.md"
+              - "3.2.4.6: Configuració i espai d'escriptori": "03.2_jetpackcompose/tutorials/6-4-6-configuracio.md"
+
+          - "3.2.5: Col·lecció Pokémon":
+              - "03.2_jetpackcompose/5_pokemon/index.md"
+              - "3.2.5.1: Dades i llistat local": "03.2_jetpackcompose/tutorials/6-5-1-dades.md"
+              - "3.2.5.2: Selecció i detall": "03.2_jetpackcompose/tutorials/6-5-2-detall.md"
+              - "3.2.5.3: Crear la base de dades amb Room": "03.2_jetpackcompose/tutorials/6-5-3-base-dades.md"
+              - "3.2.5.4: Crear el catàleg amb Room": "03.2_jetpackcompose/tutorials/6-5-4-consulta.md"
+              - "3.2.5.5: Relacionar espècies i exemplars": "03.2_jetpackcompose/tutorials/6-5-5-relacio.md"
+              - "3.2.5.6: Gestionar la col·lecció": "03.2_jetpackcompose/tutorials/6-5-6-gestio.md"

@@ -12,6 +12,9 @@ repo_url: https://github.com/lorenasanchezsanchez/2DAM_Desarrollo_de_Interfaces
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/compose-visor.js
+
 draft_docs: |
   *_unpublished.md
   *_draft.md
