@@ -807,7 +807,7 @@ Permite definir recursos específicos para el modo nocturno.
 `MainActivity.kt` controla cuándo se cambia entre los temas claro y oscuro.
 
 
-![Image](res/tema.png)
+![Image](res/tema_oscuro.png)
 ---
 
 ## 24. `AndroidManifest.xml`
