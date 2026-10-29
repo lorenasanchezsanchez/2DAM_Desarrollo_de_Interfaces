@@ -1,25 +1,14 @@
 ﻿<!DOCTYPE html>
-<html lang="es" class="anim dark" data-linea="pink">
+<html lang="es" data-linea="pink">
 
 <head>
-  <link rel="icon" data-savepage-href="https://apuntesdam.com/favicon.svg"
+  <link rel="icon"
     href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiMxMzE2MUIiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTEgMzJoMTVsMTEtMTFoMTYiLz48cGF0aCBkPSJNMjYgMzJsMTEgMTFoMTYiLz48L2c+PGNpcmNsZSBjeD0iMjYiIGN5PSIzMiIgcj0iNi41IiBmaWxsPSIjMTMxNjFCIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNCIvPjwvc3ZnPg==">
- 
 
-  <link rel="stylesheet" href="style.css">
 
-  <link rel="modulepreload" as="script" crossorigin="" data-savepage-href="/assets/index-BwY7ECfV.js" href="">
-  <link rel="modulepreload" as="script" crossorigin="" data-savepage-href="/assets/index-D6qTx4Pr.js" href="">
-  <script data-savepage-type="application/ld+json" type="text/plain" data-structured-data="educational"></script>
-  <script data-savepage-type="application/ld+json" type="text/plain" data-structured-data="breadcrumb"></script>
-  <script data-savepage-type="application/ld+json" type="text/plain" data-structured-data="organization"></script>
-  <script data-savepage-type="application/ld+json" type="text/plain" data-structured-data="website"></script>
-  <link rel="modulepreload" as="script" crossorigin="" data-savepage-href="/assets/SearchDialog-_PTuXAnR.js" href="">
-  <link rel="modulepreload" as="script" crossorigin="" data-savepage-href="/assets/file-text-BXnHzj4H.js" href="">
-  <link rel="modulepreload" as="script" crossorigin="" data-savepage-href="/assets/graduation-cap-C0rsdjOc.js" href="">
-  <style id="savepage-cssvariables">
-    :root {}
-  </style>
+  <link rel="stylesheet" href="estilos.css">
+
+
   <script id="savepage-shadowloader" type="text/javascript">
     "use strict";
     window.addEventListener("DOMContentLoaded",
@@ -28,15 +17,7 @@
       }, false);
     function savepage_ShadowLoader(c) { createShadowDOMs(0, document.documentElement); function createShadowDOMs(a, b) { var i; if (b.localName == "iframe" || b.localName == "frame") { if (a < c) { try { if (b.contentDocument.documentElement != null) { createShadowDOMs(a + 1, b.contentDocument.documentElement) } } catch (e) { } } } else { if (b.children.length >= 1 && b.children[0].localName == "template" && b.children[0].hasAttribute("data-savepage-shadowroot")) { b.attachShadow({ mode: "open" }).appendChild(b.children[0].content); b.removeChild(b.children[0]); for (i = 0; i < b.shadowRoot.children.length; i++)if (b.shadowRoot.children[i] != null) createShadowDOMs(a, b.shadowRoot.children[i]) } for (i = 0; i < b.children.length; i++)if (b.children[i] != null) createShadowDOMs(a, b.children[i]) } } }
   </script>
-  <meta name="savepage-url" content="https://apuntesdam.com/subject/desarrollo-interfaces/topic/creacion-componentes">
-  <meta name="savepage-title" content="Crear componentes visuales reutilizables en JavaFX">
-  <meta name="savepage-pubdate" content="Unknown">
-  <meta name="savepage-from" content="https://apuntesdam.com/subject/desarrollo-interfaces/topic/creacion-componentes">
-  <meta name="savepage-date" content="Mon Oct 19 2026 12:56:43 GMT+0200 (hora de verano de Europa central)">
-  <meta name="savepage-state"
-    content="Standard Items; Retain cross-origin frames; Merge CSS images; Remove unsaved URLs; Load lazy images in existing content; Max frame depth = 5; Max resource size = 50MB; Max resource time = 10s;">
-  <meta name="savepage-version" content="33.9">
-  <meta name="savepage-comments" content="">
+
 </head>
 
 <body style="overflow: unset;">
@@ -59,14 +40,7 @@
                   DAM</span></div>
               <div class="p-5 sm:p-8">
                 <div class="flex flex-wrap items-center gap-3 mb-4 print:hidden">
-                  <div class="ml-auto"><button
-                      class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-display font-bold ring-offset-background transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/50 px-4 py-2 h-8 text-xs"
-                      title="Abre el diálogo de impresión: elige «Guardar como PDF»"><svg viewBox="0 0 24 24"
-                        class="signo shrink-0 w-4 h-4 mr-2" fill="currentColor" aria-hidden="true" focusable="false">
-                        <path
-                          d="M5 2h10l5 5v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Zm10 1.4V7h3.6ZM11 9h2v5h2.6L12 18l-3.6-4H11Z"
-                          fill-rule="evenodd"></path>
-                      </svg>Descargar PDF</button></div>
+
                 </div>
                 <h1 class="font-display text-[2rem] sm:text-5xl font-extrabold text-foreground leading-[1.05]">Creación
                   de Componentes Visuales</h1>
@@ -152,7 +126,8 @@
                   ficheros distintos — y seguramente olvides alguno. Este es exactamente el problema que resuelven los
                   <strong class="text-foreground">componentes visuales reutilizables</strong>: encapsulan una pieza de
                   UI en una unidad autocontenida que puede instanciarse tantas veces como sea necesario, configurarse
-                  con distintos datos y mantenerse desde un único punto.</p>
+                  con distintos datos y mantenerse desde un único punto.
+                </p>
                 <p class="text-muted-foreground mb-4">Un componente visual reutilizable es una <strong
                     class="text-foreground">caja negra de UI</strong>: tiene una interfaz pública bien definida (sus
                   propiedades y métodos), oculta los detalles de implementación y produce un resultado visual
@@ -195,7 +170,8 @@
                             <path
                               d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z">
                             </path>
-                          </svg> Cambiar el diseño = modificar N ficheros. Un bug se reproduce N veces.</p>
+                          </svg> Cambiar el diseño = modificar N ficheros. Un bug se reproduce N veces.
+                        </p>
                       </div>
                     </div>
                     <div style="border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; overflow: hidden;">
@@ -716,9 +692,13 @@
 </span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">28</span><span>    resultadoPrevio</span><span class="token token" style="color: rgb(166, 234, 255);">:</span><span> ResultadoAccion</span><span class="token token" style="color: rgb(166, 234, 255);">?</span><span> </span><span class="token token" style="color: rgb(166, 234, 255);">=</span><span> </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">null</span><span class="token token" style="color: rgb(192, 132, 171);">,</span><span>
 </span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">29</span>
 <span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">30</span><span>    </span><span class="token token" style="color: rgb(139, 148, 166); font-style: italic;">// ── Callback de evento ────────────────────────────────────────</span><span>
-</span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">31</span><span>    onClick</span><span class="token token" style="color: rgb(166, 234, 255);">:</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">(</span><span class="token token" style="color: rgb(192, 132, 171);">)</span><span> </span><span class="token token" style="color: rgb(166, 234, 255);">-&gt;</span><span> Unit</span><span class="token token" style="color: rgb(192, 132, 171);">,</span><span>
+</span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">31</span><span>    onClick</span><span class="token token" style="color: rgb(166, 234, 255);">:</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">(</span><span class="token token" style="color: rgb(192, 132, 171);">)</span><span> </span><span class="token token" style="color: rgb(166, 234, 255);">-&gt;</span><span> Unit</span><span class="token token" style="color: rgb(192, 132, 171);">,</span><span><span style="color: rgb(139, 148, 166); font-style: italic;"> // En Kotlin, Unit es equivalente a null en otros idiomas. Es decir, no devuelve nada. Solo Ejecuta.</span>
 </span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">32</span><span></span><span class="token token" style="color: rgb(192, 132, 171);">)</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">{</span><span>
-</span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">33</span><span>    </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">val</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">(</span><span>colorFondo</span><span class="token token" style="color: rgb(192, 132, 171);">,</span><span> colorTexto</span><span class="token token" style="color: rgb(192, 132, 171);">)</span><span> </span><span class="token token" style="color: rgb(166, 234, 255);">=</span><span> </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">when</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">(</span><span>variante</span><span class="token token" style="color: rgb(192, 132, 171);">)</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">{</span><span>
+</span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">33</span><span>    </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">val</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">(</span><span>colorFondo</span><span class="token token" style="color: rgb(192, 132, 171);">,</span><span> colorTexto</span><span class="token token" style="color: rgb(192, 132, 171);">)</span><span> </span><span class="token token" style="color: rgb(166, 234, 255);">=</span><span> </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">when</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">(</span><span>variante</span><span class="token token" style="color: rgb(192, 132, 171);">)</span><span> </span><span class="token token" style="color: rgb(192, 132, 171);">{</span><span> <span style="color: rgb(139, 148, 166); font-style: italic;">El siguiente when funciona como un switch. 
+  // Evalúa el valor de la variable variante 
+  // y toma un camino diferente según el caso: Utiliza destructuring (desestructuración)
+  // para asignar en una sola línea los dos valores que devuelve el when (que vienen unidos por un to)
+  // a dos variables inmutables independientes: colorFondo y colorTexto</span>
 </span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">34</span><span>        VarianteBoton</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>PRIMARIO   </span><span class="token token" style="color: rgb(166, 234, 255);">-&gt;</span><span> MaterialTheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>colorScheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>primary </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">to</span><span> MaterialTheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>colorScheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>onPrimary
 </span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">35</span><span>        VarianteBoton</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>SECUNDARIO </span><span class="token token" style="color: rgb(166, 234, 255);">-&gt;</span><span> MaterialTheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>colorScheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>secondary </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">to</span><span> MaterialTheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>colorScheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>onSecondary
 </span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">36</span><span>        VarianteBoton</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>PELIGRO    </span><span class="token token" style="color: rgb(166, 234, 255);">-&gt;</span><span> MaterialTheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>colorScheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>error </span><span class="token token" style="color: rgb(255, 146, 223); font-weight: bold;">to</span><span> MaterialTheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>colorScheme</span><span class="token token" style="color: rgb(192, 132, 171);">.</span><span>onError
@@ -1061,7 +1041,8 @@
                           <path
                             d="M224,48V96a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h28.69L182.06,73.37a79.56,79.56,0,0,0-56.13-23.43h-.45A79.52,79.52,0,0,0,69.59,72.71,8,8,0,0,1,58.41,61.27a96,96,0,0,1,135,.79L208,76.69V48a8,8,0,0,1,16,0ZM186.41,183.29a80,80,0,0,1-112.47-.66L59.31,168H88a8,8,0,0,0,0-16H40a8,8,0,0,0-8,8v48a8,8,0,0,0,16,0V179.31l14.63,14.63A95.43,95.43,0,0,0,130,222.06h.53a95.36,95.36,0,0,0,67.07-27.33,8,8,0,0,0-11.18-11.44Z">
                           </path>
-                        </svg> Stateful — el componente gestiona su propio estado</p>
+                        </svg> Stateful — el componente gestiona su propio estado
+                      </p>
                       <p
                         style="font-size: 12px; color: hsl(var(--muted-foreground)); margin-bottom: 10px; line-height: 1.6;">
                         El componente tiene estado interno con <code>remember</code>. Conveniente pero dificulta testing
@@ -1330,7 +1311,8 @@
                         <strong
                           style="color: color-mix(in srgb, #3b82f6 var(--readable-mix), var(--readable-base));">Cuándo
                           usar: </strong>Estado simple: posición de scroll, texto escrito, tab seleccionado, valores
-                        numéricos.</p>
+                        numéricos.
+                      </p>
                       <div class="code-block my-4 rounded-lg overflow-hidden border border-code-border">
                         <div
                           class="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 bg-muted/50 border-b border-code-border">
@@ -1376,7 +1358,8 @@
                         <strong
                           style="color: color-mix(in srgb, #8b5cf6 var(--readable-mix), var(--readable-base));">Cuándo
                           usar: </strong>Estado complejo (data class) del componente que debe sobrevivir a proceso
-                        muerto.</p>
+                        muerto.
+                      </p>
                       <div class="code-block my-4 rounded-lg overflow-hidden border border-code-border">
                         <div
                           class="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 bg-muted/50 border-b border-code-border">
@@ -1439,7 +1422,8 @@
                         <strong
                           style="color: color-mix(in srgb, #10b981 var(--readable-mix), var(--readable-base));">Cuándo
                           usar: </strong>Estado de UI complejo gestionado en el ViewModel. El caso más común en apps
-                        reales.</p>
+                        reales.
+                      </p>
                       <div class="code-block my-4 rounded-lg overflow-hidden border border-code-border">
                         <div
                           class="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 bg-muted/50 border-b border-code-border">
@@ -1911,7 +1895,8 @@
                         <strong>Rojo</strong> (el test falla porque el código no existe) → <strong>Verde</strong>
                         (implementas lo mínimo para que el test pase) → <strong>Refactor</strong> (mejoras el código sin
                         romper los tests). Aplicado a componentes, garantiza que cada característica tiene cobertura de
-                        test desde el principio.</div>
+                        test desde el principio.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2363,7 +2348,8 @@
                       style="color: color-mix(in srgb, #f59e0b var(--readable-mix), var(--readable-base));">
                       MINOR</strong> = nuevas funciones compatibles (se añade una propiedad opcional).<strong
                       style="color: color-mix(in srgb, #10b981 var(--readable-mix), var(--readable-base));">
-                      PATCH</strong> = correcciones de bugs.</div>
+                      PATCH</strong> = correcciones de bugs.
+                  </div>
                 </div>
                 <div class="mt-10 space-y-4">
                   <h3 class="text-xl font-semibold text-foreground mb-3">Ejercicios prácticos del tema</h3>
@@ -2641,7 +2627,8 @@
                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                           class="lucide lucide-play w-6 h-6 text-white fill-white" aria-hidden="true">
                           <polygon points="6 3 20 12 6 21 6 3"></polygon>
-                        </svg></span></button></div>
+                        </svg></span></button>
+                  </div>
                   <figcaption class="mt-2 text-sm text-muted-foreground flex items-center gap-2"><svg
                       xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -2756,7 +2743,8 @@
                         <path
                           d="M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-16,0a72,72,0,0,0-73.74-72c-39,.92-70.47,33.39-70.26,72.39a71.65,71.65,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.15,32.15,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Zm-16.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z">
                         </path>
-                      </svg> Mensaje clave</p>
+                      </svg> Mensaje clave
+                    </p>
                     <p style="color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.6; margin: 0px;">Un
                       componente visual bien hecho es una inversión, no un coste. Las horas que dedicas a diseñar bien
                       sus propiedades, escribir sus tests y documentarlo se recuperan con creces cada vez que lo
@@ -3010,14 +2998,17 @@ cambio: 4 → 0
                                       class="ͼ1q">util</span><span class="ͼ1v">.</span>*<span class="ͼ1t">;</span></div>
                                   <div class="cm-line"><br></div>
                                   <div class="cm-line"><span class="ͼ1u">public</span> <span class="ͼ1p">class</span>
-                                    <span class="ͼ1t">Main</span> {</div>
+                                    <span class="ͼ1t">Main</span> {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1w">// TODO: completa el componente de
                                       valoración</span></div>
                                   <div class="cm-line"> <span class="ͼ1u">static</span> <span class="ͼ1p">class</span>
-                                    <span class="ͼ1t">Valoracion</span> {</div>
+                                    <span class="ͼ1t">Valoracion</span> {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">private</span> <span class="ͼ1u">double</span>
                                     <span class="ͼ1t">valor</span> <span class="ͼ1v">=</span> <span
-                                      class="ͼ1u">0</span><span class="ͼ1t">;</span></div>
+                                      class="ͼ1u">0</span><span class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"><br></div>
                                   <div class="cm-line"> <span class="ͼ1p">void</span> <span
                                       class="ͼ1t">setValor</span>(<span class="ͼ1u">double</span> <span
@@ -3032,14 +3023,17 @@ cambio: 4 → 0
                                   <div class="cm-line"><br></div>
                                   <div class="cm-line"> <span class="ͼ1u">public</span> <span class="ͼ1u">static</span>
                                     <span class="ͼ1p">void</span> <span class="ͼ1t">main</span>(<span
-                                      class="ͼ1u">String</span>[] <span class="ͼ1t">args</span>) {</div>
+                                      class="ͼ1u">String</span>[] <span class="ͼ1t">args</span>) {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">Scanner</span> <span class="ͼ1t">sc</span>
                                     <span class="ͼ1v">=</span> <span class="ͼ1p">new</span> <span
                                       class="ͼ1u">Scanner</span>(<span class="ͼ1q">System</span><span
-                                      class="ͼ1v">.</span><span class="ͼ1q">in</span>)<span class="ͼ1t">;</span></div>
+                                      class="ͼ1v">.</span><span class="ͼ1q">in</span>)<span class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">Valoracion</span> <span class="ͼ1t">v</span>
                                     <span class="ͼ1v">=</span> <span class="ͼ1p">new</span> <span
-                                      class="ͼ1u">Valoracion</span>()<span class="ͼ1t">;</span></div>
+                                      class="ͼ1u">Valoracion</span>()<span class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1p">while</span> (<span class="ͼ1q">sc</span><span
                                       class="ͼ1v">.</span><span class="ͼ1r">hasNextLine</span>()) {</div>
                                   <div class="cm-line"> <span class="ͼ1u">String</span>[] <span class="ͼ1t">p</span>
@@ -3317,21 +3311,26 @@ copia = 5</pre>
                                   </div>
                                   <div class="cm-line"><br></div>
                                   <div class="cm-line"><span class="ͼ1u">public</span> <span class="ͼ1p">class</span>
-                                    <span class="ͼ1t">Main</span> {</div>
+                                    <span class="ͼ1t">Main</span> {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1w">// TODO: implementa una propiedad observable
                                       con listeners y enlace (bind) como las de JavaFX</span></div>
                                   <div class="cm-line"> <span class="ͼ1u">static</span> <span class="ͼ1p">class</span>
-                                    <span class="ͼ1t">Propiedad</span> {</div>
+                                    <span class="ͼ1t">Propiedad</span> {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">final</span> <span class="ͼ1u">String</span>
-                                    <span class="ͼ1t">nombre</span><span class="ͼ1t">;</span></div>
+                                    <span class="ͼ1t">nombre</span><span class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1t">Propiedad</span>(<span
                                       class="ͼ1u">String</span> <span class="ͼ1t">nombre</span>) { <span
                                       class="ͼ1u">this</span><span class="ͼ1v">.</span><span class="ͼ1q">nombre</span>
                                     <span class="ͼ1v">=</span> <span class="ͼ1q">nombre</span><span class="ͼ1t">;</span>
-                                    }</div>
+                                    }
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">int</span> <span class="ͼ1t">get</span>() {
                                     <span class="ͼ1p">return</span> <span class="ͼ1u">0</span><span class="ͼ1t">;</span>
-                                    }</div>
+                                    }
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1p">void</span> <span class="ͼ1t">set</span>(<span
                                       class="ͼ1u">int</span> <span class="ͼ1t">v</span>) { }</div>
                                   <div class="cm-line"> <span class="ͼ1p">void</span> <span
@@ -3345,11 +3344,13 @@ copia = 5</pre>
                                   <div class="cm-line"><br></div>
                                   <div class="cm-line"> <span class="ͼ1u">public</span> <span class="ͼ1u">static</span>
                                     <span class="ͼ1p">void</span> <span class="ͼ1t">main</span>(<span
-                                      class="ͼ1u">String</span>[] <span class="ͼ1t">args</span>) {</div>
+                                      class="ͼ1u">String</span>[] <span class="ͼ1t">args</span>) {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">Scanner</span> <span class="ͼ1t">sc</span>
                                     <span class="ͼ1v">=</span> <span class="ͼ1p">new</span> <span
                                       class="ͼ1u">Scanner</span>(<span class="ͼ1q">System</span><span
-                                      class="ͼ1v">.</span><span class="ͼ1q">in</span>)<span class="ͼ1t">;</span></div>
+                                      class="ͼ1v">.</span><span class="ͼ1q">in</span>)<span class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">Map</span>&lt;<span
                                       class="ͼ1u">String</span><span class="ͼ1t">,</span> <span
                                       class="ͼ1u">Propiedad</span>&gt; <span class="ͼ1t">props</span> <span
@@ -3366,13 +3367,15 @@ copia = 5</pre>
                                   <div class="cm-line"> <span class="ͼ1p">if</span> (<span class="ͼ1q">p</span><span
                                       class="ͼ1v">.</span><span class="ͼ1q">length</span> <span class="ͼ1v">&lt;</span>
                                     <span class="ͼ1u">2</span>) <span class="ͼ1p">continue</span><span
-                                      class="ͼ1t">;</span></div>
+                                      class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">Propiedad</span> <span class="ͼ1t">a</span>
                                     <span class="ͼ1v">=</span> <span class="ͼ1q">props</span><span
                                       class="ͼ1v">.</span><span class="ͼ1r">computeIfAbsent</span>(<span
                                       class="ͼ1q">p</span>[<span class="ͼ1u">1</span>]<span class="ͼ1t">,</span> <span
                                       class="ͼ1u">Propiedad</span>::<span class="ͼ1p">new</span>)<span
-                                      class="ͼ1t">;</span></div>
+                                      class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1p">switch</span> (<span
                                       class="ͼ1q">p</span>[<span class="ͼ1u">0</span>]) {</div>
                                   <div class="cm-line"> <span class="ͼ1p">case</span> <span class="ͼ23">"set"</span>
@@ -3401,7 +3404,8 @@ copia = 5</pre>
                                       class="ͼ1v">.</span><span class="ͼ1q">nombre</span> <span class="ͼ1v">+</span>
                                     <span class="ͼ23">" = "</span> <span class="ͼ1v">+</span> <span
                                       class="ͼ1q">a</span><span class="ͼ1v">.</span><span class="ͼ1r">get</span>())<span
-                                      class="ͼ1t">;</span></div>
+                                      class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> }</div>
                                   <div class="cm-line"> }</div>
                                   <div class="cm-line"> }</div>
@@ -3633,21 +3637,25 @@ Completo: sí</pre>
                                       class="ͼ1q">util</span><span class="ͼ1v">.</span>*<span class="ͼ1t">;</span></div>
                                   <div class="cm-line"><br></div>
                                   <div class="cm-line"><span class="ͼ1u">public</span> <span class="ͼ1p">class</span>
-                                    <span class="ͼ1t">Main</span> {</div>
+                                    <span class="ͼ1t">Main</span> {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">public</span> <span class="ͼ1u">static</span>
                                     <span class="ͼ1p">void</span> <span class="ͼ1t">main</span>(<span
-                                      class="ͼ1u">String</span>[] <span class="ͼ1t">args</span>) {</div>
+                                      class="ͼ1u">String</span>[] <span class="ͼ1t">args</span>) {
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">Scanner</span> <span class="ͼ1t">sc</span>
                                     <span class="ͼ1v">=</span> <span class="ͼ1p">new</span> <span
                                       class="ͼ1u">Scanner</span>(<span class="ͼ1q">System</span><span
-                                      class="ͼ1v">.</span><span class="ͼ1q">in</span>)<span class="ͼ1t">;</span></div>
+                                      class="ͼ1v">.</span><span class="ͼ1q">in</span>)<span class="ͼ1t">;</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">String</span> <span class="ͼ1t">mascara</span>
                                     <span class="ͼ1v">=</span> <span class="ͼ1q">sc</span><span
                                       class="ͼ1v">.</span><span class="ͼ1r">nextLine</span>()<span
                                       class="ͼ1v">.</span><span class="ͼ1r">substring</span>(<span class="ͼ23">"mascara
                                       "</span><span class="ͼ1v">.</span><span class="ͼ1r">length</span>())<span
                                       class="ͼ1t">;</span> <span class="ͼ1w">// # dígito, A letra, ? cualquiera; lo
-                                      demás es literal</span></div>
+                                      demás es literal</span>
+                                  </div>
                                   <div class="cm-line"> <span class="ͼ1u">List</span>&lt;<span
                                       class="ͼ1u">String</span>&gt; <span class="ͼ1t">teclas</span> <span
                                       class="ͼ1v">=</span> <span class="ͼ1p">new</span> <span
@@ -4089,8 +4097,7 @@ Completo: sí</pre>
             <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-3 m-0 mb-5 pb-4 border-b border-border">
               <div class="min-w-0">
                 <dt class="font-medium text-foreground"><a class="hover:text-primary hover:underline"
-                    data-savepage-href="/glosario#componente-visual"
-                    href="https://apuntesdam.com/glosario#componente-visual" data-discover="true">Componente visual</a>
+                    data-savepage-href="/glosario#componente-visual" data-discover="true">Componente visual</a>
                 </dt>
                 <dd class="text-sm text-muted-foreground m-0">Elemento reutilizable de interfaz con propiedades y
                   eventos propios (botón, calendario, tarjeta…).</dd>
@@ -4098,9 +4105,8 @@ Completo: sí</pre>
             </dl>
             <nav aria-label="Material de repaso de la asignatura" class="flex flex-wrap gap-2"><a
                 class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
-                data-savepage-href="/glosario" href="https://apuntesdam.com/glosario" data-discover="true"><svg
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                data-discover="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   class="lucide lucide-book-a w-4 h-4" aria-hidden="true">
                   <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20">
                   </path>
@@ -4108,8 +4114,7 @@ Completo: sí</pre>
                   <path d="M9.1 11h5.7"></path>
                 </svg>Glosario completo</a><a
                 class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
-                data-savepage-href="/subject/desarrollo-interfaces/chuleta"
-                href="https://apuntesdam.com/subject/desarrollo-interfaces/chuleta" data-discover="true"><svg
+                data-savepage-href="/subject/desarrollo-interfaces/chuleta" data-discover="true"><svg
                   xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   class="lucide lucide-scroll-text w-4 h-4" aria-hidden="true">
@@ -4121,8 +4126,7 @@ Completo: sí</pre>
                   </path>
                 </svg>Chuleta de la asignatura</a><a
                 class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
-                data-savepage-href="/subject/desarrollo-interfaces/simulacro"
-                href="https://apuntesdam.com/subject/desarrollo-interfaces/simulacro" data-discover="true"><svg
+                data-savepage-href="/subject/desarrollo-interfaces/simulacro" data-discover="true"><svg
                   xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   class="lucide lucide-clipboard-check w-4 h-4" aria-hidden="true">
@@ -4131,10 +4135,10 @@ Completo: sí</pre>
                   <path d="m9 14 2 2 4-4"></path>
                 </svg>Simulacro de examen</a><a
                 class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
-                data-savepage-href="/compilador/java" href="https://apuntesdam.com/compilador/java"
-                data-discover="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="lucide lucide-terminal w-4 h-4" aria-hidden="true">
+                data-savepage-href="/compilador/java" data-discover="true"><svg xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-terminal w-4 h-4"
+                  aria-hidden="true">
                   <polyline points="4 17 10 11 4 5"></polyline>
                   <line x1="12" x2="20" y1="19" y2="19"></line>
                 </svg>Compilador de Java</a></nav>
@@ -4151,8 +4155,7 @@ Completo: sí</pre>
               paso y la solución explicada.</p>
             <ul class="list-none p-0 m-0 space-y-1.5">
               <li><a class="text-primary underline underline-offset-2"
-                  data-savepage-href="/ejercicios/javascript/componente-web-de-valoracion"
-                  href="https://apuntesdam.com/ejercicios/javascript/componente-web-de-valoracion"
+                  data-savepage-href="/ejercicios/javascript/componente-web-de-valoracion" href="./ej_resuelto.html"
                   data-discover="true">Componente web accesible: valoración con estrellas</a></li>
             </ul>
           </aside>
