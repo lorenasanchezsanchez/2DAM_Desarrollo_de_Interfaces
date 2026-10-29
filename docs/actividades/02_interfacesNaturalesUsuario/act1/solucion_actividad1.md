@@ -1960,3 +1960,58 @@ class VoiceCommandProcessor {
 </LinearLayout>
 
 ```
+
+## res > values > themes.xml
+```xml
+<resources>
+    <style name="Theme.ReconocimientoVoz" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="colorPrimary">#4267B2</item>
+        <item name="colorSecondary">#00A896</item>
+    </style>
+</resources>
+
+```
+
+## res > values > themes.xml (night)
+```xml
+<resources>
+    <style name="Theme.ReconocimientoVoz" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="colorPrimary">#9DB7F5</item>
+        <item name="colorSecondary">#65D6C7</item>
+    </style>
+</resources>
+
+```
+
+## res > values > string.xml
+
+```xml
+<resources>
+    <string name="app_name">Comandos por voz</string>
+</resources>
+
+```
+
+## res> drawable > circle_idle.xml
+
+```xml
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="#9E9E9E" />
+</shape>
+
+```
+
+## res> drawable > circle_listening.xml
+
+```xml
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="#E53935" />
+</shape>
+
+```
