@@ -845,6 +845,378 @@
                     </div>
                   </div>
                 </div>
+
+
+<section>
+    <h2>¿Qué significa by remember en Jetpack Compose?</h2>
+
+    <p>
+        En Jetpack Compose es habitual encontrar declaraciones como esta:
+    </p>
+
+    <pre><code>var visible by remember {
+    mutableStateOf(false)
+}</code></pre>
+
+    <p>
+        Esta expresión permite crear una variable de estado que conserva
+        su valor durante las recomposiciones y notifica a Compose cuando
+        cambia, para que pueda actualizar la interfaz.
+    </p>
+
+    <p>
+        Para entenderla correctamente, debemos estudiar tres conceptos:
+        <strong>remember</strong>, <strong>mutableStateOf</strong> y
+        <strong>by</strong>.
+    </p>
+
+    <h3>1. ¿Qué es remember?</h3>
+
+    <p>
+        En Jetpack Compose, las funciones marcadas con
+        <code>@Composable</code> pueden ejecutarse varias veces.
+        Este proceso se denomina <strong>recomposición</strong>.
+    </p>
+
+    <p>
+        Cuando cambia un estado que utiliza un componente, Compose vuelve
+        a ejecutar las partes necesarias de la interfaz para reflejar
+        los nuevos valores.
+    </p>
+
+    <p>Observa este ejemplo:</p>
+
+    <pre><code>@Composable
+fun Ejemplo() {
+    var contador = 0
+
+    Button(
+        onClick = {
+            contador++
+        }
+    ) {
+        Text("Contador: $contador")
+    }
+}</code></pre>
+
+    <div class="alert alert-warning">
+        <strong>¿Qué problema tiene este código?</strong>
+        <p>
+            <code>contador</code> es una variable normal de Kotlin.
+            Si se produce una recomposición, la función vuelve a ejecutarse
+            y la variable vuelve a inicializarse con el valor 0.
+            Además, modificarla no notifica a Compose de que debe actualizar
+            la interfaz.
+        </p>
+    </div>
+
+    <p>
+        Para evitar que el valor se pierda durante las recomposiciones,
+        utilizamos <code>remember</code>.
+    </p>
+
+    <pre><code>val dato = remember {
+    // Valor que queremos conservar
+}</code></pre>
+
+    <p>
+        <strong>remember</strong> almacena un valor asociado a la posición
+        del componente dentro de la composición. Cuando se produce una
+        recomposición, recupera el valor almacenado en lugar de crearlo
+        de nuevo.
+    </p>
+
+    <h3>2. ¿Qué es mutableStateOf?</h3>
+
+    <p>
+        <code>mutableStateOf()</code> crea un estado observable.
+        Esto significa que Compose puede detectar cuándo cambia su valor.
+    </p>
+
+    <pre><code>mutableStateOf(false)</code></pre>
+
+    <p>
+        En este caso, estamos creando un estado cuyo valor inicial es
+        <code>false</code>.
+    </p>
+
+    <ul>
+        <li><code>false</code>: el elemento está oculto.</li>
+        <li><code>true</code>: el elemento está visible.</li>
+    </ul>
+
+    <p>
+        Cuando modificamos el valor de un estado observable, Compose
+        detecta el cambio y programa la recomposición de los componentes
+        que leen ese estado.
+    </p>
+
+    <p>Por ejemplo:</p>
+
+    <pre><code>val visible = remember {
+    mutableStateOf(false)
+}
+
+// Cambiar el estado
+visible.value = true</code></pre>
+
+    <p>
+        Fíjate en que necesitamos utilizar <code>.value</code> para
+        consultar o modificar el valor almacenado.
+    </p>
+
+    <h3>3. ¿Qué significa by?</h3>
+
+    <p>
+        <code>by</code> es una característica del lenguaje Kotlin
+        denominada <strong>delegación de propiedades</strong>.
+    </p>
+
+    <p>
+        Permite acceder directamente al valor de un objeto que actúa
+        como delegado, sin tener que escribir continuamente
+        <code>.value</code>.
+    </p>
+
+    <p>Podemos escribir el estado de dos maneras diferentes:</p>
+
+    <h4>Opción A. Sin utilizar by</h4>
+
+    <pre><code>val visible = remember {
+    mutableStateOf(false)
+}
+
+// Consultar el valor
+if (visible.value) {
+    Text("El texto está visible")
+}
+
+// Modificar el valor
+visible.value = true</code></pre>
+
+    <h4>Opción B. Utilizando by</h4>
+
+    <pre><code>var visible by remember {
+    mutableStateOf(false)
+}
+
+// Consultar el valor
+if (visible) {
+    Text("El texto está visible")
+}
+
+// Modificar el valor
+visible = true</code></pre>
+
+    <div class="alert alert-success">
+        <strong>¿Cuál es la diferencia?</strong>
+        <p>
+            Ambas opciones trabajan con el mismo tipo de estado observable.
+            La diferencia es que <code>by</code> permite utilizar la
+            propiedad directamente, sin escribir <code>.value</code>.
+        </p>
+    </div>
+
+    <p>
+        Para utilizar <code>by</code> con estados de Compose se necesitan
+        las siguientes importaciones:
+    </p>
+
+    <pre><code>import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue</code></pre>
+
+    <p>
+        En cambio, si utilizamos <code>.value</code>, no necesitamos
+        esas importaciones para acceder al estado.
+    </p>
+
+    <h3>4. Descomponiendo la expresión completa</h3>
+
+    <p>Volvamos a la declaración inicial:</p>
+
+    <pre><code>var visible by remember {
+    mutableStateOf(false)
+}</code></pre>
+
+    <p>Podemos interpretar cada parte de la siguiente manera:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Elemento</th>
+                <th>Significado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>var</code></td>
+                <td>Declara una propiedad cuyo valor puede cambiar.</td>
+            </tr>
+            <tr>
+                <td><code>visible</code></td>
+                <td>Nombre de nuestra propiedad.</td>
+            </tr>
+            <tr>
+                <td><code>by</code></td>
+                <td>
+                    Permite acceder directamente al valor del estado
+                    delegado, sin utilizar <code>.value</code>.
+                </td>
+            </tr>
+            <tr>
+                <td><code>remember</code></td>
+                <td>
+                    Conserva el estado durante las recomposiciones.
+                </td>
+            </tr>
+            <tr>
+                <td><code>mutableStateOf(false)</code></td>
+                <td>
+                    Crea un estado observable cuyo valor inicial es
+                    <code>false</code>.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>5. Ejemplo práctico: mostrar y ocultar un texto</h3>
+
+    <p>
+        Vamos a utilizar <code>by remember</code> para controlar la
+        visibilidad de un texto al pulsar un botón.
+    </p>
+
+    <pre><code>@Composable
+fun EjemploVisible() {
+
+    var visible by remember {
+        mutableStateOf(false)
+    }
+
+    Column {
+
+        Button(
+            onClick = {
+                visible = !visible
+            }
+        ) {
+            Text("Mostrar / Ocultar")
+        }
+
+        if (visible) {
+            Text("¡Hola! Este texto ahora está visible.")
+        }
+    }
+}</code></pre>
+
+    <h4>¿Qué ocurre cuando ejecutamos la aplicación?</h4>
+
+    <ol>
+        <li>
+            Inicialmente, <code>visible</code> vale <code>false</code>.
+        </li>
+        <li>
+            Aparece el botón, pero el texto está oculto.
+        </li>
+        <li>
+            Pulsamos el botón y se ejecuta
+            <code>visible = !visible</code>.
+        </li>
+        <li>
+            El operador <code>!</code> invierte el valor:
+            <code>false</code> pasa a <code>true</code>.
+        </li>
+        <li>
+            Compose detecta el cambio de estado y realiza una recomposición.
+        </li>
+        <li>
+            Como <code>visible</code> ahora vale <code>true</code>,
+            aparece el texto.
+        </li>
+        <li>
+            Si volvemos a pulsar el botón, el valor cambia a
+            <code>false</code> y el texto desaparece.
+        </li>
+    </ol>
+
+    <h3>6. ¿Qué diferencia hay entre remember y rememberSaveable?</h3>
+
+    <p>
+        Es importante distinguirlos porque no conservan la información
+        durante los mismos acontecimientos.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Característica</th>
+                <th>remember</th>
+                <th>rememberSaveable</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Conserva el valor durante recomposiciones</td>
+                <td>Sí</td>
+                <td>Sí</td>
+            </tr>
+            <tr>
+                <td>Conserva el valor al girar la pantalla</td>
+                <td>No, por sí solo</td>
+                <td>Sí, para estados compatibles</td>
+            </tr>
+            <tr>
+                <td>Recupera el estado tras recrear la actividad</td>
+                <td>No, por sí solo</td>
+                <td>Sí, para estados compatibles</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Ejemplo con rememberSaveable:</p>
+
+    <pre><code>var visible by rememberSaveable {
+    mutableStateOf(false)
+}</code></pre>
+
+    <p>
+        En este caso, el valor puede recuperarse después de determinados
+        cambios de configuración, como girar la pantalla, siempre que
+        el estado sea compatible con el mecanismo de guardado.
+    </p>
+
+    <h3>7. Resumen: qué debemos recordar</h3>
+
+    <pre><code>var visible by remember {
+    mutableStateOf(false)
+}</code></pre>
+
+    <p>
+        Podemos leer esta expresión de la siguiente manera:
+    </p>
+
+    <blockquote>
+        Crea una propiedad llamada visible, con valor inicial false.
+        Conserva su estado durante las recomposiciones y permite que
+        Compose detecte los cambios para actualizar la interfaz.
+    </blockquote>
+
+    <div class="alert alert-info">
+        <strong>Idea fundamental para Jetpack Compose:</strong>
+        <p>
+            No basta con cambiar una variable para que la interfaz se
+            actualice. Debemos utilizar un estado observable, como
+            <code>mutableStateOf()</code>, para que Compose pueda detectar
+            los cambios.
+        </p>
+        <p>
+            <code>remember</code> conserva ese estado durante las
+            recomposiciones y <code>by</code> simplifica el acceso a su valor.
+        </p>
+    </div>
+</section>
+
+
                 <h3 class="text-xl font-semibold text-foreground mt-10 mb-3">Definición de métodos — Custom View en el
                   sistema clásico de Android</h3>
                 <p class="text-muted-foreground mb-4">En el sistema de <strong class="text-foreground">Views
@@ -967,6 +1339,1096 @@
 </span><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">90</span><span></span><span class="token token" style="color: rgb(192, 132, 171);">}</span></code></pre>
                   </div>
                 </div>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explicación de BarraProgresoCircular en Android</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.7;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px;
+            color: #263238;
+            background-color: #f5f7fa;
+        }
+
+        h1, h2, h3 {
+            color: #174a75;
+        }
+
+        h1 {
+            border-bottom: 3px solid #3B82F6;
+            padding-bottom: 12px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            margin-top: 25px;
+        }
+
+        p {
+            margin: 12px 0;
+        }
+
+        code {
+            background-color: #e8eef5;
+            color: #b42318;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #dbeafe;
+            color: #174a75;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .nota {
+            background-color: #eff6ff;
+            border-left: 5px solid #3B82F6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .importante {
+            background-color: #fff7ed;
+            border-left: 5px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .resumen {
+            background-color: #ecfdf5;
+            border-left: 5px solid #10b981;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>EXPLICACIÓN CÓDIGO: Desarrollo de un componente personalizado en Android: Barra de progreso circular</h1>
+
+<p>
+    Este código implementa un <strong>componente visual personalizado en Android utilizando Kotlin y Canvas</strong>.
+    Se trata de una barra de progreso circular que dibuja un círculo de fondo, un arco que representa el progreso
+    y un porcentaje en el centro.
+</p>
+
+<p>
+    Además, permite cambiar sus propiedades desde Kotlin o desde XML y animar el progreso.
+</p>
+
+<h2>1. Declaración de la clase</h2>
+
+<pre><code>class BarraProgresoCircular @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr)</code></pre>
+
+<p>
+    Aquí estamos creando un <strong>componente visual personalizado</strong>.
+</p>
+
+<h3>¿Qué significa cada elemento?</h3>
+
+<ul>
+    <li><code>class BarraProgresoCircular</code>: nombre de nuestra clase.</li>
+    <li><code>constructor</code>: constructor de la clase.</li>
+    <li><code>context</code>: proporciona acceso al entorno de Android, como recursos y servicios.</li>
+    <li><code>attrs</code>: contiene los atributos definidos en XML para este componente.</li>
+    <li><code>defStyleAttr</code>: permite aplicar un estilo predeterminado al componente.</li>
+</ul>
+
+<h3>¿Qué significa <code>: View(...)</code>?</h3>
+
+<p>
+    Significa que nuestra clase hereda de <code>View</code>.
+</p>
+
+<p>
+    En Android, <code>View</code> es la clase base de muchos elementos visuales:
+</p>
+
+<ul>
+    <li>TextView.</li>
+    <li>Button.</li>
+    <li>EditText.</li>
+    <li>ImageView.</li>
+</ul>
+
+<p>
+    Al heredar de <code>View</code>, podemos crear nuestro propio componente y controlar cómo se dibuja.
+    En lugar de utilizar un ProgressBar tradicional, podemos dibujar una barra circular con el diseño que queramos.
+</p>
+
+<h3>¿Qué significa <code>@JvmOverloads</code>?</h3>
+
+<pre><code>@JvmOverloads</code></pre>
+
+<p>
+    Es una anotación de Kotlin que genera sobrecargas de los constructores para facilitar su utilización
+    desde Java y desde determinados mecanismos de Android.
+</p>
+
+<h2>2. Propiedades del componente</h2>
+
+<pre><code>var progreso: Float = 0f
+    set(value) {
+        field = value.coerceIn(0f, 1f)
+        invalidate()
+    }</code></pre>
+
+<p>
+    Esta propiedad almacena el progreso de la barra.
+</p>
+
+<ul>
+    <li><code>var</code>: indica que la variable puede modificarse.</li>
+    <li><code>progreso</code>: nombre de la propiedad.</li>
+    <li><code>Float</code>: tipo de dato decimal.</li>
+    <li><code>0f</code>: valor inicial, que representa un 0 %.</li>
+</ul>
+
+<h3>¿Qué hace <code>set(value)</code>?</h3>
+
+<p>
+    Es un <strong>setter personalizado</strong>. En Kotlin, cuando modificamos una propiedad,
+    podemos ejecutar código adicional.
+</p>
+
+<pre><code>barra.progreso = 0.75f</code></pre>
+
+<p>Al asignar este valor, se ejecuta automáticamente el setter.</p>
+
+<p><strong>Primera instrucción:</strong></p>
+
+<pre><code>field = value.coerceIn(0f, 1f)</code></pre>
+
+<p>
+    <code>field</code> representa el almacenamiento interno de la propiedad.
+    <code>coerceIn(0f, 1f)</code> limita el valor para que esté entre 0 y 1.
+</p>
+
+<table>
+    <tr>
+        <th>Valor asignado</th>
+        <th>Valor almacenado</th>
+    </tr>
+    <tr><td>-0.5</td><td>0</td></tr>
+    <tr><td>0.25</td><td>0.25</td></tr>
+    <tr><td>0.75</td><td>0.75</td></tr>
+    <tr><td>1</td><td>1</td></tr>
+    <tr><td>1.5</td><td>1</td></tr>
+</table>
+
+<p><strong>Segunda instrucción:</strong></p>
+
+<pre><code>invalidate()</code></pre>
+
+<p>
+    Esta instrucción le indica a Android que el componente necesita volver a dibujarse.
+</p>
+
+<p>
+    Por ejemplo, si el progreso cambia de 25 % a 75 %, Android debe actualizar el arco circular.
+    Sin <code>invalidate()</code>, el valor interno podría cambiar, pero la representación visual
+    no se actualizaría inmediatamente.
+</p>
+
+<h3>2.1. Otras propiedades</h3>
+
+<h4>Color del arco</h4>
+
+<pre><code>var colorArco: Int = Color.parseColor("#3B82F6")
+    set(value) {
+        field = value
+        pinturaArco.color = value
+        invalidate()
+    }</code></pre>
+
+<p>
+    Almacena el color del arco de progreso.
+</p>
+
+<ul>
+    <li><code>Int</code>: los colores se representan mediante valores enteros.</li>
+    <li><code>Color.parseColor()</code>: convierte un código hexadecimal en un color Android.</li>
+    <li><code>pinturaArco.color = value</code>: actualiza el color del objeto encargado de dibujar el arco.</li>
+    <li><code>invalidate()</code>: solicita un nuevo dibujo.</li>
+</ul>
+
+<h4>Grosor del trazo</h4>
+
+<pre><code>var grosorTrazo: Float = 24f
+    set(value) {
+        field = value
+        pinturaArco.strokeWidth = value
+        pinturaFondo.strokeWidth = value
+        invalidate()
+    }</code></pre>
+
+<p>
+    Controla el grosor de los dos círculos: el arco de progreso y el círculo de fondo.
+    Se actualizan ambos objetos Paint para que tengan el mismo grosor.
+</p>
+
+<h4>Mostrar porcentaje</h4>
+
+<pre><code>var mostrarPorcentaje: Boolean = true
+    set(value) {
+        field = value
+        invalidate()
+    }</code></pre>
+
+<ul>
+    <li><code>true</code>: muestra el texto.</li>
+    <li><code>false</code>: no muestra el texto.</li>
+</ul>
+
+<h4>Texto personalizado</h4>
+
+<pre><code>var textoPersonalizado: String? = null
+    set(value) {
+        field = value
+        invalidate()
+    }</code></pre>
+
+<p>
+    Permite sustituir el porcentaje por un texto personalizado.
+</p>
+
+<pre><code>barra.textoPersonalizado = "Cargando"</code></pre>
+
+<p>
+    El tipo <code>String?</code> significa que puede contener una cadena de texto o
+    <code>null</code>.
+</p>
+
+<p>Si es <code>null</code>, se mostrará el porcentaje calculado.</p>
+
+<h2>3. Objetos Paint: cómo dibujamos</h2>
+
+<pre><code>private val pinturaArco = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    style = Paint.Style.STROKE
+    strokeCap = Paint.Cap.ROUND
+}</code></pre>
+
+<p>
+    Android utiliza la clase <code>Paint</code> para configurar cómo se dibujan las formas.
+    Podemos entenderlo como un pincel: antes de dibujar, tenemos que decidir su color,
+    grosor y estilo.
+</p>
+
+<h3>¿Qué significa <code>private val</code>?</h3>
+
+<ul>
+    <li><code>private</code>: solamente se puede utilizar dentro de esta clase.</li>
+    <li><code>val</code>: la referencia al objeto no se puede reasignar.</li>
+    <li><code>Paint</code>: clase que configura el dibujo.</li>
+</ul>
+
+<h3>¿Qué hace <code>ANTI_ALIAS_FLAG</code>?</h3>
+
+<pre><code>Paint(Paint.ANTI_ALIAS_FLAG)</code></pre>
+
+<p>
+    Activa el suavizado de los bordes. Sin este suavizado, los círculos podrían presentar
+    bordes dentados o pixelados.
+</p>
+
+<h3>¿Qué hace <code>Paint.Style.STROKE</code>?</h3>
+
+<pre><code>style = Paint.Style.STROKE</code></pre>
+
+<p>
+    Indica que queremos dibujar solamente el contorno de la figura, no rellenar su interior.
+</p>
+
+<table>
+    <tr>
+        <th>Estilo</th>
+        <th>Resultado</th>
+    </tr>
+    <tr>
+        <td><code>STROKE</code></td>
+        <td>Dibuja el contorno.</td>
+    </tr>
+    <tr>
+        <td><code>FILL</code></td>
+        <td>Rellena el interior.</td>
+    </tr>
+</table>
+
+<h3>¿Qué hace <code>Paint.Cap.ROUND</code>?</h3>
+
+<pre><code>strokeCap = Paint.Cap.ROUND</code></pre>
+
+<p>
+    Redondea los extremos del arco. Sin esta propiedad, los extremos serían rectos.
+</p>
+
+<h3>3.1. Pintura del fondo</h3>
+
+<pre><code>private val pinturaFondo = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    style = Paint.Style.STROKE
+    color = Color.parseColor("#1E293B")
+}</code></pre>
+
+<p>
+    Es otro objeto <code>Paint</code>, pero se utiliza para dibujar el círculo completo
+    que sirve como fondo.
+</p>
+
+<table>
+    <tr>
+        <th>Objeto</th>
+        <th>Función</th>
+    </tr>
+    <tr>
+        <td><code>pinturaArco</code></td>
+        <td>Dibuja el progreso.</td>
+    </tr>
+    <tr>
+        <td><code>pinturaFondo</code></td>
+        <td>Dibuja el círculo completo.</td>
+    </tr>
+</table>
+
+<h3>3.2. Pintura del texto</h3>
+
+<pre><code>private val pinturaTexto = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    textAlign = Paint.Align.CENTER
+    isFakeBoldText = true
+}</code></pre>
+
+<p>Se utiliza para dibujar el porcentaje en el centro.</p>
+
+<ul>
+    <li><code>textAlign = CENTER</code>: centra el texto horizontalmente respecto a la coordenada indicada.</li>
+    <li><code>isFakeBoldText = true</code>: aplica un efecto de negrita.</li>
+</ul>
+
+<h3>3.3. Rectángulo del arco</h3>
+
+<pre><code>private val rectArco = RectF()</code></pre>
+
+<p>
+    <code>RectF</code> representa un rectángulo mediante coordenadas decimales.
+    Aunque queremos dibujar un círculo, Android utiliza un rectángulo que delimita
+    el área donde se dibujará el arco.
+</p>
+
+<h2>4. Leer atributos definidos en XML</h2>
+
+<pre><code>init {
+    attrs?.let {
+        val ta = context.obtainStyledAttributes(
+            it,
+            R.styleable.BarraProgresoCircular
+        )
+        try {
+            // Lectura de atributos
+        } finally {
+            ta.recycle()
+        }
+    }
+}</code></pre>
+
+<p>
+    El bloque <code>init</code> se ejecuta cuando se crea una instancia de la clase.
+    En este caso, se utiliza para leer los atributos personalizados que se hayan establecido en XML.
+</p>
+
+<p>Por ejemplo:</p>
+
+<pre><code>&lt;com.ejemplo.BarraProgresoCircular
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    app:bp_progreso="0.75"
+    app:bp_mostrarPorcentaje="true" /&gt;</code></pre>
+
+<p>
+    Para que esto funcione, previamente debemos declarar los atributos en
+    <code>res/values/attrs.xml</code>.
+</p>
+
+<h3>¿Qué hace <code>obtainStyledAttributes()</code>?</h3>
+
+<pre><code>context.obtainStyledAttributes(
+    it,
+    R.styleable.BarraProgresoCircular
+)</code></pre>
+
+<p>
+    Obtiene los valores de los atributos personalizados definidos para nuestro componente.
+    El resultado se guarda en <code>ta</code>, que es un objeto <code>TypedArray</code>.
+</p>
+
+<p>
+    Podemos entenderlo como una colección de valores que Android ha leído del XML.
+</p>
+
+<h3>4.1. Obtener cada atributo</h3>
+
+<pre><code>progreso = ta.getFloat(
+    R.styleable.BarraProgresoCircular_bp_progreso,
+    0f
+)</code></pre>
+
+<p>Lee el atributo <code>bp_progreso</code>.</p>
+
+<ul>
+    <li>Primer parámetro: identifica el atributo.</li>
+    <li>Segundo parámetro: valor predeterminado si no se ha definido.</li>
+</ul>
+
+<pre><code>colorArco = ta.getColor(
+    R.styleable.BarraProgresoCircular_bp_colorArco,
+    colorArco
+)</code></pre>
+
+<p>Obtiene el color del arco.</p>
+
+<pre><code>grosorTrazo = ta.getDimension(
+    R.styleable.BarraProgresoCircular_bp_grosorTrazo,
+    24f
+)</code></pre>
+
+<p>Obtiene el grosor del trazo.</p>
+
+<pre><code>mostrarPorcentaje = ta.getBoolean(
+    R.styleable.BarraProgresoCircular_bp_mostrarPorcentaje,
+    true
+)</code></pre>
+
+<p>Obtiene si debemos mostrar el porcentaje.</p>
+
+<h3>4.2. ¿Por qué utilizamos try-finally?</h3>
+
+<pre><code>finally {
+    ta.recycle()
+}</code></pre>
+
+<p>
+    Cuando terminamos de utilizar el <code>TypedArray</code>, debemos liberarlo.
+    <code>recycle()</code> permite devolverlo al sistema de reutilización de objetos de Android.
+</p>
+
+<p>
+    Es importante ejecutarlo incluso si se produce una excepción al leer los atributos.
+    Por eso se utiliza <code>finally</code>.
+</p>
+
+<h3>4.3. Inicialización de las pinturas</h3>
+
+<pre><code>pinturaArco.apply {
+    color = colorArco
+    strokeWidth = grosorTrazo
+}
+
+pinturaFondo.strokeWidth = grosorTrazo</code></pre>
+
+<p>
+    Una vez leídos los atributos XML, configuramos las pinturas con los valores correspondientes.
+    Esto es necesario porque los valores podrían haberse modificado desde XML durante la creación del componente.
+</p>
+
+<h2>5. Calcular el tamaño: onMeasure()</h2>
+
+<pre><code>override fun onMeasure(
+    widthMeasureSpec: Int,
+    heightMeasureSpec: Int
+) {
+    val tamaño = minOf(
+        MeasureSpec.getSize(widthMeasureSpec),
+        MeasureSpec.getSize(heightMeasureSpec)
+    )
+
+    setMeasuredDimension(tamaño, tamaño)
+}</code></pre>
+
+<p>
+    Este método forma parte del ciclo de dibujo de una <code>View</code>.
+    Android necesita saber cuánto espacio debe ocupar cada componente antes de dibujarlo.
+    Para ello utiliza <code>onMeasure()</code>.
+</p>
+
+<h3>¿Qué son los parámetros?</h3>
+
+<ul>
+    <li><code>widthMeasureSpec</code>: información sobre el ancho disponible.</li>
+    <li><code>heightMeasureSpec</code>: información sobre el alto disponible.</li>
+</ul>
+
+<h3>¿Qué hace MeasureSpec.getSize()?</h3>
+
+<p>Extrae el tamaño indicado en cada parámetro.</p>
+
+<p>Por ejemplo:</p>
+
+<ul>
+    <li>Ancho: 200 píxeles.</li>
+    <li>Alto: 150 píxeles.</li>
+</ul>
+
+<h3>¿Qué hace minOf()?</h3>
+
+<pre><code>val tamaño = minOf(ancho, alto)</code></pre>
+
+<p>Devuelve el menor de los dos valores.</p>
+
+<pre><code>minOf(200, 150) = 150</code></pre>
+
+<h3>¿Qué hace setMeasuredDimension()?</h3>
+
+<pre><code>setMeasuredDimension(tamaño, tamaño)</code></pre>
+
+<p>
+    Establece las dimensiones definitivas del componente. Como utiliza el mismo valor
+    para el ancho y el alto, el componente siempre será cuadrado.
+</p>
+
+<div class="importante">
+    <strong>Importante:</strong> esta implementación es sencilla para un ejemplo didáctico,
+    pero no respeta completamente los modos de medida de Android
+    (<code>EXACTLY</code>, <code>AT_MOST</code> y <code>UNSPECIFIED</code>).
+    En una implementación de producción habría que tenerlos en cuenta.
+</div>
+
+<h2>6. Calcular la geometría: onSizeChanged()</h2>
+
+<pre><code>override fun onSizeChanged(
+    w: Int,
+    h: Int,
+    oldw: Int,
+    oldh: Int
+) {
+    super.onSizeChanged(w, h, oldw, oldh)
+}</code></pre>
+
+<p>
+    Este método se ejecuta cuando cambia el tamaño del componente.
+</p>
+
+<table>
+    <tr>
+        <th>Parámetro</th>
+        <th>Significado</th>
+    </tr>
+    <tr><td><code>w</code></td><td>Nuevo ancho.</td></tr>
+    <tr><td><code>h</code></td><td>Nuevo alto.</td></tr>
+    <tr><td><code>oldw</code></td><td>Ancho anterior.</td></tr>
+    <tr><td><code>oldh</code></td><td>Alto anterior.</td></tr>
+</table>
+
+<p>Aquí calculamos las coordenadas del rectángulo que delimita el círculo.</p>
+
+<pre><code>val margen = grosorTrazo / 2f + paddingLeft</code></pre>
+
+<p>
+    Calculamos un margen para evitar que el trazo sobresalga del espacio disponible.
+</p>
+
+<p>
+    ¿Por qué dividimos el grosor entre dos? Porque el trazo se dibuja centrado sobre
+    el límite de la figura. Por tanto, la mitad del grosor queda hacia dentro y la otra mitad hacia fuera.
+</p>
+
+<pre><code>rectArco.set(
+    margen,
+    margen,
+    w - margen,
+    h - margen
+)</code></pre>
+
+<p>Establecemos las cuatro coordenadas del rectángulo:</p>
+
+<ul>
+    <li>Coordenada izquierda: <code>margen</code>.</li>
+    <li>Coordenada superior: <code>margen</code>.</li>
+    <li>Coordenada derecha: <code>w - margen</code>.</li>
+    <li>Coordenada inferior: <code>h - margen</code>.</li>
+</ul>
+
+<p>Finalmente:</p>
+
+<pre><code>pinturaTexto.textSize = w * 0.22f</code></pre>
+
+<p>
+    Calcula el tamaño del texto proporcionalmente al ancho del componente.
+    Si el componente tiene 200 píxeles:
+</p>
+
+<pre><code>200 × 0.22 = 44 píxeles</code></pre>
+
+<p>El texto tendrá un tamaño de 44 píxeles.</p>
+
+<div class="importante">
+    <strong>Observación técnica:</strong> el cálculo del margen utiliza
+    <code>paddingLeft</code> para los cuatro lados. Para admitir correctamente
+    padding diferente en cada lado, habría que calcular cada coordenada utilizando
+    su padding correspondiente.
+</div>
+
+<h2>7. Dibujar el componente: onDraw()</h2>
+
+<p>Esta es la parte más importante del código.</p>
+
+<pre><code>override fun onDraw(canvas: Canvas) {
+    super.onDraw(canvas)
+}</code></pre>
+
+<p>
+    <code>onDraw()</code> es el método que Android llama cuando necesita dibujar el componente.
+    El parámetro <code>canvas</code> representa el lienzo sobre el que vamos a dibujar.
+</p>
+
+<p>
+    Podemos imaginar que tenemos una hoja en blanco y utilizamos diferentes pinturas para dibujar sobre ella.
+    En este caso realizamos tres operaciones.
+</p>
+
+<h3>7.1. Dibujar el círculo de fondo</h3>
+
+<pre><code>canvas.drawArc(
+    rectArco,
+    0f,
+    360f,
+    false,
+    pinturaFondo
+)</code></pre>
+
+<p>
+    <code>drawArc()</code> permite dibujar un arco circular o una circunferencia.
+</p>
+
+<pre><code>drawArc(
+    rectángulo,
+    ánguloInicial,
+    ánguloBarrido,
+    usarCentro,
+    pintura
+)</code></pre>
+
+<table>
+    <tr>
+        <th>Parámetro</th>
+        <th>Valor</th>
+        <th>Significado</th>
+    </tr>
+    <tr>
+        <td>Rectángulo</td>
+        <td><code>rectArco</code></td>
+        <td>Área donde dibujamos.</td>
+    </tr>
+    <tr>
+        <td>Ángulo inicial</td>
+        <td><code>0f</code></td>
+        <td>Punto de inicio.</td>
+    </tr>
+    <tr>
+        <td>Ángulo barrido</td>
+        <td><code>360f</code></td>
+        <td>Una vuelta completa.</td>
+    </tr>
+    <tr>
+        <td>Usar centro</td>
+        <td><code>false</code></td>
+        <td>No se une el arco con el centro.</td>
+    </tr>
+    <tr>
+        <td>Pintura</td>
+        <td><code>pinturaFondo</code></td>
+        <td>Color y grosor.</td>
+    </tr>
+</table>
+
+<p>
+    Como el ángulo barrido es de 360 grados, dibujamos el círculo completo.
+</p>
+
+<h3>7.2. Dibujar el arco de progreso</h3>
+
+<pre><code>canvas.drawArc(
+    rectArco,
+    -90f,
+    progreso * 360f,
+    false,
+    pinturaArco
+)</code></pre>
+
+<p>
+    Aquí dibujamos solamente la parte de la circunferencia que representa el progreso.
+</p>
+
+<p>
+    El primer ángulo es <code>-90f</code>. Android utiliza como referencia el eje horizontal derecho
+    para los ángulos. Un ángulo de -90 grados corresponde a la parte superior del círculo.
+</p>
+
+<p>Así conseguimos que el progreso empiece desde las 12 en punto.</p>
+
+<h3>¿Por qué multiplicamos por 360?</h3>
+
+<p>
+    Porque una circunferencia completa tiene 360 grados. El progreso está representado
+    mediante un número entre 0 y 1.
+</p>
+
+<table>
+    <tr>
+        <th>Progreso</th>
+        <th>Operación</th>
+        <th>Ángulo</th>
+    </tr>
+    <tr><td>0 %</td><td>0 × 360</td><td>0°</td></tr>
+    <tr><td>25 %</td><td>0.25 × 360</td><td>90°</td></tr>
+    <tr><td>50 %</td><td>0.50 × 360</td><td>180°</td></tr>
+    <tr><td>75 %</td><td>0.75 × 360</td><td>270°</td></tr>
+    <tr><td>100 %</td><td>1 × 360</td><td>360°</td></tr>
+</table>
+
+<p>Por tanto, si tenemos:</p>
+
+<pre><code>progreso = 0.75f</code></pre>
+
+<p>El arco dibujado será de 270 grados.</p>
+
+<h3>7.3. Dibujar el porcentaje en el centro</h3>
+
+<pre><code>if (mostrarPorcentaje) {
+    val texto = textoPersonalizado ?: "${(progreso * 100).toInt()}%"
+    pinturaTexto.color = colorArco
+    canvas.drawText(
+        texto,
+        width / 2f,
+        height / 2f + pinturaTexto.textSize / 3,
+        pinturaTexto
+    )
+}</code></pre>
+
+<p>Primero comprobamos si debemos mostrar el texto.</p>
+
+<p>
+    Después calculamos qué texto se mostrará. Aquí aparece el operador <code>?:</code>,
+    llamado <strong>operador Elvis</strong> en Kotlin.
+</p>
+
+<ul>
+    <li>Si <code>textoPersonalizado</code> no es <code>null</code>, utilizamos ese texto.</li>
+    <li>Si es <code>null</code>, calculamos el porcentaje.</li>
+</ul>
+
+<p>Por ejemplo:</p>
+
+<pre><code>progreso = 0.75f
+
+(0.75f * 100).toInt()
+
+// Resultado: 75</code></pre>
+
+<p>Por tanto, el texto será <strong>75%</strong>.</p>
+
+<p>
+    Después establecemos el color del texto mediante <code>pinturaTexto.color = colorArco</code>.
+</p>
+
+<p>
+    Finalmente, <code>canvas.drawText()</code> dibuja el texto. Sus parámetros son:
+</p>
+
+<ol>
+    <li><code>texto</code>: contenido que queremos mostrar.</li>
+    <li><code>width / 2f</code>: coordenada horizontal.</li>
+    <li><code>height / 2f + pinturaTexto.textSize / 3</code>: coordenada vertical.</li>
+    <li><code>pinturaTexto</code>: configuración de la pintura.</li>
+</ol>
+
+<p>
+    Como previamente hemos establecido <code>textAlign = Paint.Align.CENTER</code>,
+    la coordenada horizontal indica el centro del texto.
+</p>
+
+<p>
+    El ajuste vertical sirve para compensar la línea base del texto y conseguir que quede visualmente centrado.
+</p>
+
+<h2>8. Animar el progreso: animarHasta()</h2>
+
+<pre><code>fun animarHasta(
+    progresoFinal: Float,
+    duracionMs: Long = 800
+)</code></pre>
+
+<p>
+    Este es un método público que permite animar el progreso desde su valor actual hasta otro valor.
+</p>
+
+<pre><code>barra.animarHasta(0.85f)</code></pre>
+
+<p>
+    La barra pasará progresivamente desde el valor actual hasta el 85 %.
+</p>
+
+<h3>8.1. Crear el animador</h3>
+
+<pre><code>ValueAnimator.ofFloat(progreso, progresoFinal)</code></pre>
+
+<p>
+    <code>ValueAnimator</code> es una clase de Android que permite generar valores intermedios entre dos números.
+</p>
+
+<p>Por ejemplo, si queremos pasar de 0 a 1:</p>
+
+<pre><code>0.0
+0.1
+0.2
+0.3
+0.4
+...
+1.0</code></pre>
+
+<p>Android calcula automáticamente los valores intermedios durante la animación.</p>
+
+<h3>8.2. Establecer la duración</h3>
+
+<pre><code>duration = duracionMs</code></pre>
+
+<p>
+    Determina cuánto tiempo dura la animación. El valor predeterminado es 800 milisegundos,
+    es decir, 0,8 segundos.
+</p>
+
+<h3>8.3. Interpolador</h3>
+
+<pre><code>interpolator = DecelerateInterpolator()</code></pre>
+
+<p>
+    Controla cómo evoluciona la animación. <code>DecelerateInterpolator</code> hace que
+    el movimiento comience más rápido y vaya ralentizándose hasta llegar al valor final.
+</p>
+
+<h3>8.4. Actualizar el progreso</h3>
+
+<pre><code>addUpdateListener {
+    progreso = it.animatedValue as Float
+}</code></pre>
+
+<p>Esta instrucción se ejecuta repetidamente durante la animación.</p>
+
+<ul>
+    <li><code>it</code>: representa el objeto animador.</li>
+    <li><code>animatedValue</code>: contiene el valor actual de la animación.</li>
+    <li><code>as Float</code>: convierte el valor al tipo Float.</li>
+    <li><code>progreso = ...</code>: actualiza la propiedad del componente.</li>
+</ul>
+
+<p>
+    Recuerda que el setter de <code>progreso</code> ejecuta <code>invalidate()</code>.
+    Por tanto, cada vez que cambia el valor, Android solicita volver a dibujar el componente.
+</p>
+
+<p>Así conseguimos que el arco crezca progresivamente.</p>
+
+<h3>8.5. Iniciar la animación</h3>
+
+<pre><code>start()</code></pre>
+
+<p>Comienza la animación.</p>
+
+<h2>9. ¿Cómo se utiliza este componente?</h2>
+
+<p>
+    Una vez creada la clase, podemos utilizarla desde un archivo XML.
+</p>
+
+<pre><code>&lt;com.ejemplo.BarraProgresoCircular
+    android:id="@+id/barraProgreso"
+    android:layout_width="180dp"
+    android:layout_height="180dp"
+    app:bp_progreso="0.50"
+    app:bp_colorArco="#3B82F6"
+    app:bp_grosorTrazo="16dp"
+    app:bp_mostrarPorcentaje="true" /&gt;</code></pre>
+
+<p>
+    Para que estos atributos estén disponibles, necesitamos declararlos previamente
+    en <code>res/values/attrs.xml</code>.
+</p>
+
+<pre><code>&lt;resources&gt;
+    &lt;declare-styleable name="BarraProgresoCircular"&gt;
+
+        &lt;attr name="bp_progreso" format="float" /&gt;
+
+        &lt;attr name="bp_colorArco" format="color" /&gt;
+
+        &lt;attr name="bp_grosorTrazo" format="dimension" /&gt;
+
+        &lt;attr name="bp_mostrarPorcentaje" format="boolean" /&gt;
+
+    &lt;/declare-styleable&gt;
+&lt;/resources&gt;</code></pre>
+
+<h3>Modificar el componente desde Kotlin</h3>
+
+<pre><code>val barra = findViewById&lt;BarraProgresoCircular&gt;(
+    R.id.barraProgreso
+)
+
+barra.progreso = 0.30f
+
+barra.colorArco = Color.GREEN
+
+barra.animarHasta(0.90f)</code></pre>
+
+<p>En este caso:</p>
+
+<ol>
+    <li>Localizamos el componente mediante su ID.</li>
+    <li>Cambiamos su progreso al 30 %.</li>
+    <li>Cambiamos el color del arco.</li>
+    <li>Animamos el progreso hasta el 90 %.</li>
+</ol>
+
+<h2>10. Resumen: ciclo de vida del componente</h2>
+
+<p>
+    Para entender cómo funciona todo el código, es importante identificar el orden
+    de intervención de los métodos principales.
+</p>
+
+<table>
+    <tr>
+        <th>Método</th>
+        <th>Responsabilidad</th>
+    </tr>
+    <tr>
+        <td>Constructor</td>
+        <td>Crea el componente.</td>
+    </tr>
+    <tr>
+        <td><code>init</code></td>
+        <td>Lee los atributos XML e inicializa las pinturas.</td>
+    </tr>
+    <tr>
+        <td><code>onMeasure()</code></td>
+        <td>Calcula el tamaño que ocupará.</td>
+    </tr>
+    <tr>
+        <td><code>onSizeChanged()</code></td>
+        <td>Calcula las coordenadas del dibujo.</td>
+    </tr>
+    <tr>
+        <td><code>onDraw()</code></td>
+        <td>Dibuja el círculo, el progreso y el texto.</td>
+    </tr>
+    <tr>
+        <td><code>invalidate()</code></td>
+        <td>Solicita que se vuelva a dibujar.</td>
+    </tr>
+    <tr>
+        <td><code>animarHasta()</code></td>
+        <td>Modifica progresivamente el valor del progreso.</td>
+    </tr>
+</table>
+
+<h3>Funcionamiento general</h3>
+
+<ol>
+    <li>Android crea una instancia de <code>BarraProgresoCircular</code>.</li>
+    <li>Se leen los atributos personalizados del XML.</li>
+    <li>Android calcula el tamaño del componente.</li>
+    <li>Se calculan las coordenadas del círculo.</li>
+    <li>Se ejecuta <code>onDraw()</code> para representar el componente.</li>
+    <li>Si cambia el progreso, se llama a <code>invalidate()</code>.</li>
+    <li>Android vuelve a ejecutar el dibujo.</li>
+    <li>Si utilizamos <code>animarHasta()</code>, el progreso cambia gradualmente y se repite el proceso.</li>
+</ol>
+
+<div class="resumen">
+    <strong>Idea fundamental:</strong> este componente no utiliza una imagen ni un
+    ProgressBar estándar. Dibuja sus propios elementos mediante <code>Canvas</code>
+    y <code>Paint</code>, lo que permite controlar completamente su apariencia y comportamiento.
+</div>
+
+<h2>11. Conceptos de Desarrollo de Interfaces que aparecen</h2>
+
+<p>Este ejemplo permite trabajar varios conceptos fundamentales:</p>
+
+<ul>
+    <li><strong>Herencia:</strong> <code>BarraProgresoCircular</code> hereda de <code>View</code>.</li>
+    <li><strong>Encapsulación:</strong> utiliza propiedades privadas y públicas.</li>
+    <li><strong>Getters y setters personalizados:</strong> permiten ejecutar acciones al modificar propiedades.</li>
+    <li><strong>Atributos personalizados XML:</strong> permiten configurar el componente desde un layout.</li>
+    <li><strong>Ciclo de medida y dibujo de una View:</strong> mediante <code>onMeasure()</code>, <code>onSizeChanged()</code> y <code>onDraw()</code>.</li>
+    <li><strong>Canvas y Paint:</strong> permiten dibujar formas y texto de manera personalizada.</li>
+    <li><strong>Actualización visual:</strong> mediante <code>invalidate()</code>.</li>
+    <li><strong>Animaciones:</strong> mediante <code>ValueAnimator</code>.</li>
+</ul>
+
+<p>
+    Es un ejemplo bastante completo para explicar cómo se construye un
+    <strong>componente visual personalizado en Android</strong>, más allá de utilizar
+    los controles que proporciona la plataforma.
+</p>
+
+</body>
+</html>
+
+                
                 <div class="code-block my-4 rounded-lg overflow-hidden border border-code-border">
                   <div
                     class="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 bg-muted/50 border-b border-code-border">
@@ -986,6 +2448,12 @@
                         <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
                       </svg></button>
                   </div>
+
+
+
+
+
+                  
                   <div class="bg-code">
                     <pre tabindex="0" role="region"
                       aria-label="Código: res/values/attrs.xml — Declarar atributos XML del componente"
@@ -1019,6 +2487,430 @@
 </span><span class="token token" style="color: rgb(139, 148, 166); font-style: italic;"><span class="linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 2.25em; padding-right: 1em; text-align: right; user-select: none; color: rgb(139, 148, 166); font-style: italic;">28</span>--&gt;</span></code></pre>
                   </div>
                 </div>
+
+<section>
+    <h2>1. ¿Qué es attrs.xml?</h2>
+
+    <p>
+        El archivo <strong>attrs.xml</strong> se encuentra dentro de
+        <code>res/values/</code> y sirve para declarar los atributos
+        personalizados que podrá utilizar nuestro componente
+        <code>BarraProgresoCircular</code> desde un archivo XML.
+    </p>
+
+    <p>Por ejemplo, podemos crear el archivo:</p>
+
+    <pre><code>res/values/attrs.xml</code></pre>
+
+    <h2>2. Declaración de atributos personalizados</h2>
+
+    <p>
+        En este archivo utilizamos <code>declare-styleable</code> para
+        agrupar todos los atributos que pertenecen a nuestro componente.
+    </p>
+
+    <pre><code>&lt;resources&gt;
+    &lt;!-- Define los atributos XML del Custom View --&gt;
+    &lt;declare-styleable name="BarraProgresoCircular"&gt;
+
+        &lt;!-- Progreso de la barra (0.0 a 1.0) --&gt;
+        &lt;attr name="bp_progreso" format="float" /&gt;
+
+        &lt;!-- Color del arco --&gt;
+        &lt;attr name="bp_colorArco" format="color" /&gt;
+
+        &lt;!-- Grosor del trazo --&gt;
+        &lt;attr name="bp_grosorTrazo" format="dimension" /&gt;
+
+        &lt;!-- Mostrar u ocultar el porcentaje --&gt;
+        &lt;attr name="bp_mostrarPorcentaje" format="boolean" /&gt;
+
+        &lt;!-- Estilo de representación del arco --&gt;
+        &lt;attr name="bp_estilo"&gt;
+            &lt;enum name="normal" value="0" /&gt;
+            &lt;enum name="gradiente" value="1" /&gt;
+            &lt;enum name="punteado" value="2" /&gt;
+        &lt;/attr&gt;
+
+    &lt;/declare-styleable&gt;
+&lt;/resources&gt;</code></pre>
+
+    <h2>3. ¿Qué es declare-styleable?</h2>
+
+    <pre><code>&lt;declare-styleable name="BarraProgresoCircular"&gt;</code></pre>
+
+    <p>
+        Agrupa todos los atributos personalizados que pertenecen a
+        nuestro componente. El nombre <code>BarraProgresoCircular</code>
+        debe coincidir con el que utilizamos en Kotlin al recuperar
+        los atributos:
+    </p>
+
+    <pre><code>context.obtainStyledAttributes(
+    attrs,
+    R.styleable.BarraProgresoCircular
+)</code></pre>
+
+    <p>
+        Android genera automáticamente referencias en la clase
+        <code>R.styleable</code>, que podremos utilizar desde Kotlin.
+    </p>
+
+    <h2>4. Tipos de atributos</h2>
+
+    <p>
+        Cada atributo tiene un tipo de dato que determina qué valores
+        podemos asignarle desde XML.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Atributo</th>
+                <th>Tipo</th>
+                <th>Función</th>
+                <th>Ejemplo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>bp_progreso</code></td>
+                <td>float</td>
+                <td>Indica el progreso de la barra.</td>
+                <td><code>0.65</code></td>
+            </tr>
+            <tr>
+                <td><code>bp_colorArco</code></td>
+                <td>color</td>
+                <td>Define el color del arco.</td>
+                <td><code>#10B981</code></td>
+            </tr>
+            <tr>
+                <td><code>bp_grosorTrazo</code></td>
+                <td>dimension</td>
+                <td>Establece el grosor del arco.</td>
+                <td><code>14dp</code></td>
+            </tr>
+            <tr>
+                <td><code>bp_mostrarPorcentaje</code></td>
+                <td>boolean</td>
+                <td>Indica si se muestra el porcentaje.</td>
+                <td><code>true</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Ejemplo: atributo float</h3>
+
+    <pre><code>&lt;attr name="bp_progreso" format="float" /&gt;</code></pre>
+
+    <p>
+        Declara un atributo que acepta números decimales. Si establecemos
+        <code>app:bp_progreso="0.65"</code>, estamos indicando que la barra
+        debe representar un progreso del 65 %.
+    </p>
+
+    <h3>Ejemplo: atributo color</h3>
+
+    <pre><code>&lt;attr name="bp_colorArco" format="color" /&gt;</code></pre>
+
+    <p>
+        Permite establecer el color del arco utilizando un código de color,
+        por ejemplo <code>#10B981</code>.
+    </p>
+
+    <h3>Ejemplo: atributo dimension</h3>
+
+    <pre><code>&lt;attr name="bp_grosorTrazo" format="dimension" /&gt;</code></pre>
+
+    <p>
+        Permite establecer dimensiones como <code>14dp</code>.
+        Android convertirá automáticamente esa dimensión al valor
+        correspondiente en píxeles.
+    </p>
+
+    <h3>Ejemplo: atributo boolean</h3>
+
+    <pre><code>&lt;attr name="bp_mostrarPorcentaje" format="boolean" /&gt;</code></pre>
+
+    <p>
+        Permite utilizar los valores <code>true</code> o <code>false</code>
+        para mostrar u ocultar el porcentaje.
+    </p>
+
+    <h2>5. Atributos de tipo enum</h2>
+
+    <p>
+        Un atributo <code>enum</code> permite definir una lista de opciones
+        preestablecidas. De esta manera, el usuario no puede introducir
+        cualquier valor, sino que debe elegir uno de los definidos.
+    </p>
+
+    <pre><code>&lt;attr name="bp_estilo"&gt;
+    &lt;enum name="normal" value="0" /&gt;
+    &lt;enum name="gradiente" value="1" /&gt;
+    &lt;enum name="punteado" value="2" /&gt;
+&lt;/attr&gt;</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Opción XML</th>
+                <th>Valor interno</th>
+                <th>Significado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>normal</code></td>
+                <td>0</td>
+                <td>Arco de un único color.</td>
+            </tr>
+            <tr>
+                <td><code>gradiente</code></td>
+                <td>1</td>
+                <td>Arco con efecto degradado.</td>
+            </tr>
+            <tr>
+                <td><code>punteado</code></td>
+                <td>2</td>
+                <td>Arco formado por puntos o segmentos.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Desde el layout podemos escribir:</p>
+
+    <pre><code>app:bp_estilo="gradiente"</code></pre>
+
+    <p>
+        Android asociará automáticamente <code>gradiente</code> con el
+        valor entero <code>1</code>.
+    </p>
+
+    <h3>Recuperar el enum en Kotlin</h3>
+
+    <pre><code>val estilo = typedArray.getInt(
+    R.styleable.BarraProgresoCircular_bp_estilo,
+    0
+)</code></pre>
+
+    <p>
+        El segundo parámetro (<code>0</code>) es el valor predeterminado
+        que se utilizará si no se especifica el atributo.
+    </p>
+
+    <p>Después podemos utilizar una estructura <code>when</code>:</p>
+
+    <pre><code>when (estilo) {
+    0 -&gt; {
+        // Dibujar arco normal
+    }
+
+    1 -&gt; {
+        // Dibujar arco con gradiente
+    }
+
+    2 -&gt; {
+        // Dibujar arco punteado
+    }
+}</code></pre>
+
+    <div class="alert alert-warning">
+        <strong>Importante:</strong> declarar estos estilos en
+        <code>attrs.xml</code> no implementa automáticamente los efectos
+        visuales. También tendremos que programar cómo se dibuja cada
+        uno de ellos dentro de <code>onDraw()</code>.
+    </div>
+
+    <h2>6. Utilizar los atributos en un layout XML</h2>
+
+    <p>
+        Una vez declarados los atributos, podemos utilizarlos al insertar
+        nuestro componente personalizado en cualquier layout.
+    </p>
+
+    <pre><code>&lt;com.ejemplo.components.BarraProgresoCircular
+    android:id="@+id/barraProgreso"
+    android:layout_width="120dp"
+    android:layout_height="120dp"
+    app:bp_progreso="0.65"
+    app:bp_colorArco="#10B981"
+    app:bp_grosorTrazo="14dp"
+    app:bp_mostrarPorcentaje="true"
+    app:bp_estilo="gradiente" /&gt;</code></pre>
+
+    <p>
+        Fíjate en que utilizamos el prefijo <code>app:</code> para los
+        atributos personalizados.
+    </p>
+
+    <h3>Declarar el espacio de nombres app</h3>
+
+    <p>
+        Para poder utilizar estos atributos, el elemento raíz del layout
+        debe declarar el espacio de nombres <code>app</code>:
+    </p>
+
+    <pre><code>xmlns:app="http://schemas.android.com/apk/res-auto"</code></pre>
+
+    <p>Por ejemplo:</p>
+
+    <pre><code>&lt;LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"&gt;
+
+    &lt;com.ejemplo.components.BarraProgresoCircular
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:bp_progreso="0.65"
+        app:bp_colorArco="#10B981"
+        app:bp_grosorTrazo="14dp"
+        app:bp_mostrarPorcentaje="true"
+        app:bp_estilo="gradiente" /&gt;
+
+&lt;/LinearLayout&gt;</code></pre>
+
+    <h2>7. Recuperar los atributos desde Kotlin</h2>
+
+    <p>
+        En el constructor de nuestro componente personalizado podemos
+        recuperar los valores definidos en el XML mediante
+        <code>obtainStyledAttributes()</code>.
+    </p>
+
+    <pre><code>val typedArray = context.obtainStyledAttributes(
+    attrs,
+    R.styleable.BarraProgresoCircular
+)
+
+try {
+    progreso = typedArray.getFloat(
+        R.styleable.BarraProgresoCircular_bp_progreso,
+        0f
+    )
+
+    colorArco = typedArray.getColor(
+        R.styleable.BarraProgresoCircular_bp_colorArco,
+        Color.BLUE
+    )
+
+    grosorTrazo = typedArray.getDimension(
+        R.styleable.BarraProgresoCircular_bp_grosorTrazo,
+        10f
+    )
+
+    mostrarPorcentaje = typedArray.getBoolean(
+        R.styleable.BarraProgresoCircular_bp_mostrarPorcentaje,
+        true
+    )
+
+    estilo = typedArray.getInt(
+        R.styleable.BarraProgresoCircular_bp_estilo,
+        0
+    )
+
+} finally {
+    typedArray.recycle()
+}</code></pre>
+
+    <p>
+        Cada método permite recuperar un tipo de dato diferente:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Método</th>
+                <th>Tipo de dato</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>getFloat()</code></td>
+                <td>Número decimal.</td>
+            </tr>
+            <tr>
+                <td><code>getColor()</code></td>
+                <td>Color.</td>
+            </tr>
+            <tr>
+                <td><code>getDimension()</code></td>
+                <td>Dimensión en píxeles.</td>
+            </tr>
+            <tr>
+                <td><code>getBoolean()</code></td>
+                <td>Valor verdadero o falso.</td>
+            </tr>
+            <tr>
+                <td><code>getInt()</code></td>
+                <td>Número entero, como los valores del enum.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="alert alert-info">
+        <strong>¿Por qué utilizamos recycle()?</strong>
+        <p>
+            <code>obtainStyledAttributes()</code> devuelve un objeto
+            <code>TypedArray</code> que utiliza recursos internos de Android.
+            Cuando terminamos de leer sus valores debemos llamar a
+            <code>recycle()</code> para liberar esos recursos.
+        </p>
+    </div>
+
+    <h2>8. Relación entre attrs.xml, XML y Kotlin</h2>
+
+    <p>El proceso completo funciona de la siguiente manera:</p>
+
+    <ol>
+        <li>
+            <strong>attrs.xml:</strong> declaramos qué atributos
+            personalizados existen y qué tipo de valores aceptan.
+        </li>
+        <li>
+            <strong>Layout XML:</strong> utilizamos esos atributos para
+            configurar nuestro componente.
+        </li>
+        <li>
+            <strong>Constructor Kotlin:</strong> recuperamos los valores
+            mediante <code>obtainStyledAttributes()</code>.
+        </li>
+        <li>
+            <strong>onDraw():</strong> utilizamos esos valores para
+            dibujar el componente personalizado.
+        </li>
+    </ol>
+
+    <p>
+        Por ejemplo, cuando escribimos
+        <code>app:bp_grosorTrazo="14dp"</code>, recuperamos ese valor
+        en Kotlin mediante:
+    </p>
+
+    <pre><code>grosorTrazo = typedArray.getDimension(
+    R.styleable.BarraProgresoCircular_bp_grosorTrazo,
+    10f
+)</code></pre>
+
+    <p>
+        El valor predeterminado es <code>10f</code> píxeles si no se
+        especifica el atributo.
+    </p>
+
+    <div class="alert alert-success">
+        <strong>Idea clave:</strong>
+        <code>attrs.xml</code> permite que nuestro componente personalizado
+        tenga una configuración propia desde XML, igual que los componentes
+        que proporciona Android, como <code>Button</code>,
+        <code>TextView</code> o <code>EditText</code>.
+    </div>
+</section>
+
+
+
                 <h3 class="text-xl font-semibold text-foreground mt-10 mb-3">Gestión de eventos — State Hoisting en
                   Jetpack Compose</h3>
                 <p class="text-muted-foreground mb-4">En Jetpack Compose, el patrón fundamental para gestionar eventos
